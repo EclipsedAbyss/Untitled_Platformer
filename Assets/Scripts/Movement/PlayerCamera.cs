@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    float sensitivityX;
-    float sensitivityY;
+    [SerializeField]float sensitivityX;
+    [SerializeField]float sensitivityY;
 
     public Transform orientation;
 

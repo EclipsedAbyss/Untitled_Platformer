@@ -300,6 +300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 664b83e37ee9f304c8919b678c9b7b8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sensitivityX: 400
+  sensitivityY: 400
   orientation: {fileID: 1104149507}
 --- !u!1 &322110666
 GameObject:
@@ -435,6 +437,7 @@ GameObject:
   - component: {fileID: 1104149505}
   - component: {fileID: 1104149504}
   - component: {fileID: 1104149503}
+  - component: {fileID: 1104149508}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -562,6 +565,30 @@ Transform:
   - {fileID: 1236580197}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1104149508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104149502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a9ca95b7b99b0c428ce7283176971f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 10
+  orientation: {fileID: 1104149507}
+  grounded: 0
+  groundDrag: 5
+  jumpforce: 10
+  jumpcooldown: 1
+  airmultiplier: 5
+  jumpKey: 32
+  playerHeight: 1.5
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &1122106070
 GameObject:
   m_ObjectHideFlags: 0
