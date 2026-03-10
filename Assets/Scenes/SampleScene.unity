@@ -583,7 +583,7 @@ MonoBehaviour:
   groundDrag: 5
   jumpforce: 10
   jumpcooldown: 1
-  airmultiplier: 5
+  airmultiplier: 2
   jumpKey: 32
   playerHeight: 1.5
   whatIsGround:

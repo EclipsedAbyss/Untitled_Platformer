@@ -48,6 +48,7 @@ public class BaseMovement : MonoBehaviour
         else
         {
             onGround = false;
+            rb.linearDamping = 0;
         }
     }
 
@@ -59,7 +60,7 @@ public class BaseMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(jumpKey) && readyToJump)
+        if (Input.GetKey(jumpKey) && readyToJump && onGround)
         {
             readyToJump = false;
             jump();
