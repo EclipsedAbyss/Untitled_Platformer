@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BaseMovement : MonoBehaviour
@@ -15,6 +16,8 @@ public class BaseMovement : MonoBehaviour
     public float jumpforce;
     public float jumpcooldown;
     public float airmultiplier;
+    public float DashCount;
+    [HideInInspector] public float DashCountStored;
     bool readyToJump;
 
     [Header("keybinds")]
@@ -31,11 +34,12 @@ public class BaseMovement : MonoBehaviour
     {
         rb = this.GetComponent<Rigidbody>();
         readyToJump = true;
+        DashCountStored = DashCount;
     }
 
     private void Update()
     {
-        myInput();
+        InputRegisterBASE();
         SpeedControl();
 
 
@@ -56,14 +60,15 @@ public class BaseMovement : MonoBehaviour
     {
         moveDirection();    
     }
-    private void myInput()
+    private void InputRegisterBASE()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(jumpKey) && readyToJump && onGround)
+        if (Input.GetKey(jumpKey) && readyToJump && DashCount > 0)
         {
             readyToJump = false;
             jump();
+            DashCount -= 1;
             Invoke(nameof(ResetJump), jumpcooldown);
         }
     }
@@ -75,6 +80,7 @@ public class BaseMovement : MonoBehaviour
         if (onGround)
         {
             rb.AddForce(MovementDirection.normalized * moveSpeed * 10, ForceMode.Force);
+            DashCount = DashCountStored;
         }
         else if (!onGround)
         {
