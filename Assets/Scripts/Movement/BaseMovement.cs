@@ -18,18 +18,19 @@ public class BaseMovement : MonoBehaviour
 
     [Header("QuickBoost")]
     public float QBForce;
+    public float QBForceMult;
     public float QBCoolDown;
     public float QBMemoryTime;
     public float airmultiplier;
-    public float DashCount;
+    public float dashCount;
     [HideInInspector] public float DashCountStored;
     private BaseMovement baseMovement;
     public KeyCode QBKey = KeyCode.LeftShift;
     public KeyCode downDash = KeyCode.LeftControl;
-    public KeyCode ForwardKey = KeyCode.W;
-    public KeyCode BackwardKey = KeyCode.S;
-    public KeyCode LeftKey = KeyCode.A;
-    public KeyCode RightKey = KeyCode.D;
+    public KeyCode forwardKey = KeyCode.W;
+    public KeyCode backwardKey = KeyCode.S;
+    public KeyCode leftKey = KeyCode.A;
+    public KeyCode rightKey = KeyCode.D;
     [HideInInspector] public float lastQB;
     [SerializeField] private float speedLockTimer;
     [SerializeField] private float boostChainFallOff;
@@ -51,7 +52,7 @@ public class BaseMovement : MonoBehaviour
     private void Start()
     {
         rb = this.GetComponent<Rigidbody>();
-        DashCountStored = DashCount;
+        DashCountStored = dashCount;
         speedLockTimerStored = speedLockTimer;
         speedLockTimer = 0;
     }
@@ -86,10 +87,10 @@ public class BaseMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(jumpKey) && DashCount > 0 && onGround == false && lastQB != 5)
+        if (Input.GetKey(jumpKey) && dashCount > 0 && onGround == false && lastQB != 5)
         {
             jump();
-            DashCount -= 1;
+            dashCount -= 1;
             Invoke(nameof(ResetQB), QBCoolDown);
             Invoke(nameof(QBMemory), QBMemoryTime);
             lastQB = 5;
@@ -104,60 +105,75 @@ public class BaseMovement : MonoBehaviour
             Debug.Log("Jump");
         }
 
-        if (Input.GetKey(downDash) && DashCount > 0 && onGround == false && lastQB != 6)
+        if (Input.GetKey(downDash) && dashCount > 0 && onGround == false)
         {
-
-            dashDown();
-            DashCount -= 1;
-            Invoke(nameof(ResetQB), QBCoolDown);
-            Invoke(nameof(QBMemory), QBMemoryTime);
-            lastQB = 6;
-            Debug.Log("DownBoost");
+            if (lastQB !=  6)
+            {
+                dashDown();
+                dashCount -= 1;
+                Invoke(nameof(ResetQB), QBCoolDown);
+                Invoke(nameof(QBMemory), QBMemoryTime);
+                lastQB = 6;
+                Debug.Log("DownBoost");
+            }
+           
         }
-        else
+        else if (Input.GetKey(downDash) && dashCount > 0 && onGround == true && lastQB != 6)
         {
             lastQB = 6;
             Debug.Log("YOU ARE DASHING DOWN WHILE PLANTED FIRMLY ON IT WHAT ARE YOU DOING");
         }
 
-
-
-        if (Input.GetKey(QBKey) && DashCount > 0 && Input.GetKey(BackwardKey) && lastQB != 2)
+        if (Input.GetKey(QBKey) && dashCount > 0 && Input.GetKey(backwardKey))
         {
-            rb.AddForce((transform.forward * -1) * (QBForce * 1.5f), ForceMode.Impulse);
-            DashCount -= 1;
-            lastQB = 2;
-            Invoke(nameof(ResetQB), QBCoolDown);
-            Invoke(nameof(QBMemory), QBMemoryTime);
-            Debug.Log("ReverseBoost");
+            if(lastQB != 2)
+            {
+                rb.AddForce((transform.forward * -1) * (QBForce * QBForceMult), ForceMode.Impulse);
+                dashCount -= 1;
+                lastQB = 2;
+                Invoke(nameof(ResetQB), QBCoolDown);
+                Invoke(nameof(QBMemory), QBMemoryTime);
+                Debug.Log("ReverseBoost");
+            }
+            
         }
-        else if (Input.GetKey(QBKey) && DashCount > 0 && Input.GetKey(LeftKey) && lastQB != 3)
+        else if (Input.GetKey(QBKey) && dashCount > 0 && Input.GetKey(leftKey))
         {
-            rb.AddForce((transform.right * -1) * (QBForce * 1.5f), ForceMode.Impulse);
-            DashCount -= 1;
-            lastQB = 3;
-            Invoke(nameof(ResetQB), QBCoolDown);
-            Invoke(nameof(QBMemory), QBMemoryTime);
-            Debug.Log("LeftBoost");
+            if (lastQB != 3)
+            {
+                rb.AddForce((transform.right * -1) * (QBForce * QBForceMult), ForceMode.Impulse);
+                dashCount -= 1;
+                lastQB = 3;
+                Invoke(nameof(ResetQB), QBCoolDown);
+                Invoke(nameof(QBMemory), QBMemoryTime);
+                Debug.Log("LeftBoost");
+            }
         }
-        else if (Input.GetKey(QBKey) && DashCount > 0 && Input.GetKey(RightKey) && lastQB != 4)
+        else if (Input.GetKey(QBKey) && dashCount > 0 && Input.GetKey(rightKey))
         {
-            rb.AddForce(transform.right * (QBForce * 1.5f), ForceMode.Impulse);
-            DashCount -= 1;
-            lastQB = 4;
-            Invoke(nameof(ResetQB), QBCoolDown);
-            Invoke(nameof(QBMemory), QBMemoryTime);
-            Debug.Log("RightBoost");
+            if (lastQB != 4)
+            {
+                rb.AddForce(transform.right * (QBForce * QBForceMult), ForceMode.Impulse);
+                dashCount -= 1;
+                lastQB = 4;
+                Invoke(nameof(ResetQB), QBCoolDown);
+                Invoke(nameof(QBMemory), QBMemoryTime);
+                Debug.Log("RightBoost");
+            }
+            
         }
-        else if (Input.GetKey(QBKey) && DashCount > 0 && Input.GetKey(ForwardKey) && lastQB != 1)
+        else if (Input.GetKey(QBKey) && dashCount > 0 && Input.GetKey(forwardKey))
         {
+            if (lastQB != 1)
+            {
+                rb.AddForce(transform.forward * (QBForce * QBForceMult), ForceMode.Impulse);
+                dashCount -= 1;
+                lastQB = 1;
+                Invoke(nameof(ResetQB), QBCoolDown);
+                Invoke(nameof(QBMemory), QBMemoryTime);
+                Debug.Log("forwardBoost");
+            }
 
-            rb.AddForce(transform.forward * (QBForce * 1.5f), ForceMode.Impulse);
-            DashCount -= 1;
-            lastQB = 1;
-            Invoke(nameof(ResetQB), QBCoolDown);
-            Invoke(nameof(QBMemory), QBMemoryTime);
-            Debug.Log("forwardBoost");
         }
     }
 
@@ -174,7 +190,7 @@ public class BaseMovement : MonoBehaviour
         if (onGround)
         {
             rb.AddForce(MovementDirection.normalized * moveSpeed * 10, ForceMode.Force);
-            DashCount = DashCountStored;
+            dashCount = DashCountStored;
         }
         else if (!onGround)
         {
@@ -215,6 +231,6 @@ public class BaseMovement : MonoBehaviour
     }
     public void ResetQB()
     {
-        DashCount += 1;
+        dashCount += 1;
     }
 }

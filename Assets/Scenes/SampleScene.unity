@@ -550,17 +550,18 @@ MonoBehaviour:
   grounded: 0
   groundDrag: 5
   QBForce: 10
-  QBCoolDown: 2
-  QBMemoryTime: 1
+  QBForceMult: 10
+  QBCoolDown: 30
+  QBMemoryTime: 0.5
   airmultiplier: 1
-  DashCount: 6
+  dashCount: 9
   DashCountStored: 0
   QBKey: 304
   downDash: 306
-  ForwardKey: 119
-  BackwardKey: 115
-  LeftKey: 97
-  RightKey: 100
+  forwardKey: 119
+  backwardKey: 115
+  leftKey: 97
+  rightKey: 100
   lastQB: 0
   speedLockTimer: 0.5
   boostChainFallOff: 10
