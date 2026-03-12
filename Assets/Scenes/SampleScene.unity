@@ -1060,8 +1060,8 @@ MonoBehaviour:
   airmultiplier: 1
   dashCount: 9
   downDashBounce: 0
-  downDashBounceTime: 10
-  downDashBounceForce: 1
+  downDashBounceTime: 4
+  downDashBounceForce: 0.5
   downDashPrepKick: 10
   forwardKey: 119
   leftKey: 97
