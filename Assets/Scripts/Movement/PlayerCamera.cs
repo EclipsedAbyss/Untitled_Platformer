@@ -4,8 +4,9 @@ public class PlayerCamera : MonoBehaviour
 {
     [SerializeField]float sensitivityX;
     [SerializeField]float sensitivityY;
-
-    public Transform orientation;
+    private BaseMovement playerMovement;
+    private GameObject player;
+    [HideInInspector] public Transform orientation;
 
     float xRotation;
     float yRotation;
@@ -13,6 +14,9 @@ public class PlayerCamera : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        playerMovement = FindFirstObjectByType<BaseMovement>();
+        player = playerMovement.gameObject;
+        orientation = playerMovement.transform;
     }
 
     private void Update()
@@ -26,5 +30,6 @@ public class PlayerCamera : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -90, 90);
         transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+        // basic camera movement, not attatched to the player as the camera jittered severely when it was.
     } 
 }
