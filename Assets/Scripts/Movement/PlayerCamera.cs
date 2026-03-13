@@ -6,8 +6,8 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField]float sensitivityY;
     private BaseMovement playerMovement;
     private GameObject player;
-    [HideInInspector] public Transform orientation;
-
+    public Transform orientation;
+    //this allows for camera movement. this script has been particularly troublesome due to it sometimes forgetting what the player is if the movement script is changed too much at once. i have no idea what causes it.
     float xRotation;
     float yRotation;
     private void Start()

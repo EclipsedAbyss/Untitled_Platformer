@@ -8,3 +8,5 @@ public class CameraPosition : MonoBehaviour
         this.transform.position = cameraLocation.transform.position;
     }
 }
+    // sets the camera to the players position.
+    //it not being placed on the player is due to the camera freaking out in response to the rigidbody.
