@@ -19,6 +19,7 @@ public class BaseMovement : MonoBehaviour
 
 
     [Header("QuickBoost")] // all of these fields are for the multi-directional dash (includes jumping and downdashing) this was an absolute headache to get working initially.
+    Rigidbody rb;
     public float QBForce;
     public float QBForceMult;
     public float airmultiplier;
@@ -32,16 +33,16 @@ public class BaseMovement : MonoBehaviour
     public KeyCode backwardKey = KeyCode.S;
     public KeyCode rightKey = KeyCode.D;// inputs stored fr detecting direction dash is being performed in.
     [HideInInspector] public float dashDirection;
-    [HideInInspector] public float DashCountStored;
+    [HideInInspector] public float dashCountStored;
     [HideInInspector] public float lastQB; // 0 is none, 1 is forward, 2 is back, 3 is left, 4 is right. the numbers are inconsequental aside from allowing a cooldown bypass by chainboosting(this is intended). 
     [HideInInspector] public float lastVerticalDash;// 0 is none, 1 is up, 2 is down. same use as above but for vertical movement to avoid penalizing players due to bad code execution.
     [HideInInspector] public bool downDashGrounded;
 
 
-    [Header("QuickBoost Delay Values")]
+    [Header("QuickBoost Delay Values")]// these were split off the r\prior header for legibilities sake. these are all in relation to cooldowns and delays.
     public float QBCoolDown;
     public float QBRecharge;
-    public float QBRechargeDelay;
+    public float QBRechargeDelayChecker;
     public float verticalCoolDown;
     public float QBMemoryTime;
     [SerializeField] private float speedLockTimer;
@@ -51,37 +52,35 @@ public class BaseMovement : MonoBehaviour
     private float QBRechargeDelayStored;
     
 
-    [Header("keybinds")]
+    [Header("keybinds")]// actual input bindings. the priorly listed wasd are not really inputs but more just detection.
     public KeyCode jumpKey = KeyCode.Space;
-    Rigidbody rb;
     public KeyCode QBKey = KeyCode.LeftShift;
     public KeyCode downDash = KeyCode.LeftControl;
 
-    [Header("Ground Check")]
+    [Header("Ground Check")]// checks for the player being on the ground.
     public float playerHeight;
     public LayerMask whatIsGround;
     bool onGround;
 
     private void Start()
     {
-        rb = this.GetComponent<Rigidbody>();
-        DashCountStored = dashCount;
-        speedLockTimerStored = speedLockTimer;
-        downDashBounceTimeStored = downDashBounceTime;
-        downDashBounceTime = 0;
-        speedLockTimer = 0;
-        QBRechargeDelayStored = QBRecharge;
-        QBRechargeDelayStored = QBRechargeDelay;
+        rb = this.GetComponent<Rigidbody>();// gets the players rigidbody.
+        dashCountStored = dashCount;//stores the total amount of dashes manually set.
+        speedLockTimerStored = speedLockTimer;// preserves information of the manually stated timer.
+        downDashBounceTimeStored = downDashBounceTime;//same as above
+        QBRechargeDelayStored = QBRecharge;//same
+        downDashBounceTime = 0;// clears the timer to avoid it firing prematurely
+        speedLockTimer = 0;//same as above
     }
 
     private void Update()
     {
 
-        InputRegister();
-        SpeedControl();
+        InputRegister();// used to detect inputs
+        SpeedControl();// used for drag on ground
 
 
-        bool grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        bool grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);// this allows the player to know what ground is
         if (grounded)
         {
             rb.linearDamping = groundDrag;
@@ -95,9 +94,9 @@ public class BaseMovement : MonoBehaviour
 
         speedLockTimer -= Time.deltaTime;
         downDashBounceTime -= Time.deltaTime;
-        QBRechargeDelay -= Time.deltaTime; 
+        
 
-        if (downDashBounceTime > 0 && onGround)// this allows the player to do smaller hops from the jump via dashing into the ground;
+        if (downDashBounceTime > 0 && onGround)// this allows the player to bounce when downdashing into the floor. not extremely useful but its kinda fun and could definately have use cases
         {
             Jump();
         }
@@ -105,29 +104,29 @@ public class BaseMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MoveDirection();    
+        MoveDirection();    //allows movement and prevents movement from being sped up based on framerate.
     }
     private void InputRegister()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(jumpKey) && dashCount > 0 && !onGround && lastVerticalDash != 1)
+        if (Input.GetKey(jumpKey) && dashCount > 0 && !onGround && lastVerticalDash != 1)// allows for midair jumping (up dash)
         {
             Jump();
             dashCount -= 1;
             Debug.Log("UpBoost");
         }
-        else if (Input.GetKey(jumpKey) && onGround && lastVerticalDash != 1)
+        else if (Input.GetKey(jumpKey) && onGround && lastVerticalDash != 1)// allows grunded jumps (does not consume a charge)
         {
             Jump();
             Debug.Log("Jump");
         }
 
-        if (Input.GetKey(downDash) && dashCount > 0 && !onGround && lastVerticalDash != 2)
+        if (Input.GetKey(downDash) && dashCount > 0 && !onGround && lastVerticalDash != 2)// allows to down dash
         {
             DashDown();
         }
-        else if (Input.GetKey(downDash) && dashCount > 0 && onGround && lastVerticalDash != 2)
+        else if (Input.GetKey(downDash) && dashCount > 0 && onGround && lastVerticalDash != 2)//allows to down dash immediately into a horizontal dash while grounded for a larger result, at the cost of an extra charge.
         {
             lastVerticalDash = 2;
             dashCount -= 1;
@@ -135,9 +134,9 @@ public class BaseMovement : MonoBehaviour
             Debug.Log("Perepped");
         }
 
-        if(Input.GetKey(QBKey))
+        if(Input.GetKey(QBKey))// registers when the player quickboosts
         {
-            if (dashCount > 0 && Input.GetKey(backwardKey))
+            if (dashCount > 0 && Input.GetKey(backwardKey))// placed at the top for highest priority, gets the player holding back and dashes in that direction
             {
                 if (lastQB != 2)
                 {
@@ -146,11 +145,11 @@ public class BaseMovement : MonoBehaviour
                 }
 
             }
-            else if (dashCount > 0 && Input.GetKey(leftKey))
+            else if (dashCount > 0 && Input.GetKey(leftKey))//these 2 (left and right) were essentially a coin toss in priority since realistically noone should try to do both at once
             {
                 if (lastQB != 3)
                 {
-                    dashDirection = -1;
+                    dashDirection = -1;// to allow for less obtuse coode, both side dashes run the same function but just reverse the actual directionit is sent. the same applies to forward and back.
                     SideDash();
                 }
             }
@@ -163,7 +162,7 @@ public class BaseMovement : MonoBehaviour
                 }
 
             }
-            else if (dashCount > 0 && Input.GetKey(forwardKey))
+            else if (dashCount > 0)// if the player is going forward or is simply still, the default is a forward dash. lowest priority to assist in control useability
             {
                 if (lastQB != 1)
                 {
@@ -187,7 +186,7 @@ public class BaseMovement : MonoBehaviour
         Debug.Log("DownBoost");
     }
 
-    private void SideDash()
+    private void SideDash()//code to induce the sideways dash
     {
         if (downDashGrounded == true)
         {
@@ -210,7 +209,7 @@ public class BaseMovement : MonoBehaviour
         Debug.Log("sideboost");
     }
 
-    private void ForwardDash()
+    private void ForwardDash()// code to induce the forward/backward dash
     {
         rb.AddForce((transform.forward * dashDirection) * (QBForce * QBForceMult), ForceMode.Impulse);
         dashCount -= 1;
@@ -224,7 +223,7 @@ public class BaseMovement : MonoBehaviour
         Debug.Log("forward boost");
     }
 
-    private void MoveDirection()
+    private void MoveDirection()//allows to move the player
     {
         MovementDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
@@ -232,10 +231,14 @@ public class BaseMovement : MonoBehaviour
         {
             rb.AddForce(10 * moveSpeed * MovementDirection.normalized, ForceMode.Force);
 
-            if (QBRechargeDelay < 0)
+            if (QBRechargeDelayChecker < dashCount)
             {
                 Invoke(nameof(ResetQB), QBRecharge);
-                QBRechargeDelay = QBRechargeDelayStored;
+                QBRechargeDelayChecker = dashCount;
+            }
+            else if (QBRechargeDelayChecker > dashCount)
+            {
+                QBRechargeDelayChecker = dashCount;
             }
         }
         else 
@@ -253,7 +256,7 @@ public class BaseMovement : MonoBehaviour
             rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
         }
     }
-    private void Jump()
+    private void Jump()// allows to jump
     {
         if(speedLockTimer > 0)
         {
@@ -278,18 +281,18 @@ public class BaseMovement : MonoBehaviour
         lastQB = 5;
 
     }
-    public void QBMemory()
+    public void QBMemory()// remembers the last quickboost performed to allow chainboosting. chainboosting is an idea taken from an animation cancel exploit found in armoured core for answer.
     {
         lastQB = 0;
     }
-    public void VerticalDashMemory()
+    public void VerticalDashMemory()//allows to do the same as above but for dashing up and down
     {
         lastVerticalDash = 0;
     }
 
-    public void ResetQB()
+    public void ResetQB()// slowly increases stored charges.
     {
-       if (dashCount != DashCountStored)
+       if (dashCount != dashCountStored)
         {
             dashCount += 1;
         }
