@@ -46,6 +46,8 @@ public class BaseMovement : MonoBehaviour
     public float QBRechargeDelayChecker;
     public float verticalCoolDown;
     public float QBMemoryTime;
+    public bool amDashing;
+    [SerializeField] private float dashDuration;
     [SerializeField] private float speedLockTimer;
     [SerializeField] private float boostChainFallOff;
     [SerializeField] private float downDashKickDecayTime;
@@ -53,7 +55,8 @@ public class BaseMovement : MonoBehaviour
     [SerializeField] private float dashAccumulationThreshhold;
     private float speedLockTimerStored;
     private float downDashBounceTimeStored;
-    private float QBRechargeDelayStored;
+    
+
     
 
     [Header("keybinds")]// actual input bindings. the priorly listed wasd are not really inputs but more just detection.
@@ -72,7 +75,6 @@ public class BaseMovement : MonoBehaviour
         dashCountStored = dashCount;//stores the total amount of dashes manually set.
         speedLockTimerStored = speedLockTimer;// preserves information of the manually stated timer.
         downDashBounceTimeStored = downDashBounceTime;//same as above
-        QBRechargeDelayStored = QBRecharge;//same
         downDashBounceTime = 0;// clears the timer to avoid it firing prematurely
         speedLockTimer = 0;//same as above
         canVDash = true;
@@ -188,8 +190,10 @@ public class BaseMovement : MonoBehaviour
         downDashBounceTime = downDashBounceTimeStored;
         dashCount -= 1;
         canVDash = false;
+        amDashing = true;
         //Invoke(nameof(ResetQB), QBCoolDown);
         Invoke(nameof(VerticalDashMemory), verticalCoolDown);
+        Invoke(nameof(dashDurationEnd), dashDuration);
         lastQB = 6;
         Debug.Log("DownBoost");
     }
@@ -202,8 +206,9 @@ public class BaseMovement : MonoBehaviour
             lastQB = 3;
         else if (dashDirection == 1)
             lastQB = 4;
+        amDashing = true;
         Invoke(nameof(QBMemory), QBCoolDown);
-
+        Invoke(nameof(dashDurationEnd), dashDuration);
         //Invoke(nameof(ResetQB), QBCoolDown);
         Debug.Log("sideboost");
     }
@@ -217,7 +222,9 @@ public class BaseMovement : MonoBehaviour
             lastQB = 2;
         else if (dashDirection == 1)
             lastQB = 1;
+        amDashing = true;
         Invoke(nameof(QBMemory), QBCoolDown);
+        Invoke(nameof(dashDurationEnd), dashDuration);
         //invoke(nameof(resetqb), qbcooldown);
         Debug.Log("forward boost");
     }
@@ -274,9 +281,11 @@ public class BaseMovement : MonoBehaviour
         }
 
         lastQB = 5;
+        amDashing = true;
         speedLockTimer = speedLockTimerStored;
         //Invoke(nameof(ResetQB), QBCoolDown);
         Invoke(nameof(VerticalDashMemory), verticalCoolDown);
+        Invoke(nameof(dashDurationEnd), dashDuration);
 
 
     }
@@ -310,5 +319,9 @@ public class BaseMovement : MonoBehaviour
     public void DownDashKickDecay()
     {
         downDashPrepKick = 1;
+    }
+    public void dashDurationEnd()
+    {
+        amDashing = false;
     }
 }
