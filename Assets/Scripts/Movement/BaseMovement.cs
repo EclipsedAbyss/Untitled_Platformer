@@ -16,6 +16,7 @@ public class BaseMovement : MonoBehaviour
     [HideInInspector] public float grounded;
     Vector3 MovementDirection;
     public float groundDrag;
+    public float iceDrag;
 
 
 
@@ -38,6 +39,7 @@ public class BaseMovement : MonoBehaviour
     [HideInInspector] private bool canVDash;// allows cancelling a circumstance where the player holds space and ctrl simoultaniously draining all of their charges.
     [HideInInspector] public float downDashPrepKick;//used to store the bonus force for the boost
     [SerializeField] private float groundedBonusForce;//used to set the bonus force gained from a grounded downdash
+    private bool canGroundJump;
 
 
     [Header("QuickBoost Delay Values")]// these were split off the r\prior header for legibilities sake. these are all in relation to cooldowns and delays.
@@ -47,6 +49,7 @@ public class BaseMovement : MonoBehaviour
     public float verticalCoolDown;
     public float QBMemoryTime;
     public float dashAccumulationThreshhold;
+    public float coyoteTimer;
     public bool amDashing;
     [SerializeField] private float dashDuration;
     [SerializeField] private float speedLockTimer;
@@ -67,6 +70,7 @@ public class BaseMovement : MonoBehaviour
     [Header("Ground Check")]// checks for the player being on the ground.
     public float playerHeight;
     public LayerMask whatIsGround;
+    public LayerMask whatIsIce;
     bool onGround;
 
     private void Start()
@@ -89,15 +93,25 @@ public class BaseMovement : MonoBehaviour
 
 
         bool grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);// this allows the player to know what ground is
-        if (grounded)
+        bool sliding = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsIce);//allows the player to have different movement on ice.
+        if (grounded && !amDashing)
         {
             rb.linearDamping = groundDrag;
             onGround = true;
+            canGroundJump = true;
+        }
+        else if(sliding && !amDashing)
+        {
+            rb.linearDamping = iceDrag;
+            onGround = true;
+            canGroundJump = true;
         }
         else
         {
+            Invoke(nameof(CoyoteTime), coyoteTimer);
             onGround = false;
             rb.linearDamping = 0;
+
         }
 
         speedLockTimer -= Time.deltaTime;
@@ -124,7 +138,7 @@ public class BaseMovement : MonoBehaviour
             dashCount -= 1;
             Debug.Log("UpBoost");
         }
-        else if (Input.GetKey(jumpKey) && onGround && canVDash)// allows grunded jumps (does not consume a charge)
+        else if (Input.GetKey(jumpKey) && canGroundJump && canVDash)// allows grunded jumps (does not consume a charge)
         {
             Jump();
             Debug.Log("Jump");
@@ -261,7 +275,8 @@ public class BaseMovement : MonoBehaviour
     }
     private void Jump()// allows to jump
     {
-        if(speedLockTimer > 0)
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);//resets players vertical velocity so that you can actually jump out of an extended fall.
+        if (speedLockTimer > 0)
         {
             rb.AddForce(transform.up * (QBForce / boostChainFallOff), ForceMode.Impulse);
             canVDash = false;
@@ -323,5 +338,9 @@ public class BaseMovement : MonoBehaviour
     public void dashDurationEnd()
     {
         amDashing = false;
+    }
+    public void CoyoteTime()
+    {
+        canGroundJump = false;
     }
 }

@@ -16,6 +16,7 @@ public class PlayerCamera : MonoBehaviour
     float xRotation;
     float yRotation;
     public float maxFovValue;
+    public float FOVEffectDelayTime;
     private bool fallOffAllower;//allows the fov gain falloff to actually trigger without being reset every frame.
     private bool overExtensionBlocker; //prevents the above bool from being touched every frame.
     private void Start()
@@ -44,34 +45,37 @@ public class PlayerCamera : MonoBehaviour
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
         // basic camera movement, not attatched to the player as the camera jittered severely when it was.
 
-        averageLinearSpeed = rb.linearVelocity.magnitude;
+        averageLinearSpeed = rb.linearVelocity.magnitude / 3;
         mainCam.fieldOfView = mainCam.fieldOfView;
         if (!playerMovement.amDashing)
         {
-            mainCam.fieldOfView = storedCamFOV + averageLinearSpeed;
+            mainCam.fieldOfView = storedCamFOV + averageLinearSpeed; //for non boosting FOV effects
         }
         else
         {
-            if (!fallOffAllower)
+            if (!fallOffAllower)//used for dashing to avoid it stacking
             {
-                mainCam.fieldOfView += dashFOVEffect;
+                mainCam.fieldOfView += dashFOVEffect/3;
+                Invoke(nameof(FOVEffectDelay), FOVEffectDelayTime);
                 fallOffAllower = true;
             }
 
         }
-        if (fallOffAllower && mainCam.fieldOfView > storedCamFOV)
+        if (fallOffAllower && mainCam.fieldOfView > storedCamFOV)//reduces FOV shift
         {
-            mainCam.fieldOfView -= (Time.deltaTime * 25);
+            mainCam.fieldOfView -= (Time.deltaTime);
         }
 
-        if (mainCam.fieldOfView > maxFovValue)//just to make sure we dont under or overflow the players fov.
-        {
-            mainCam.fieldOfView = maxFovValue;
-        }
-        else if (mainCam.fieldOfView < storedCamFOV)
+        mainCam.fieldOfView = Mathf.Clamp(mainCam.fieldOfView, storedCamFOV, maxFovValue);
+
+        if (mainCam.fieldOfView == storedCamFOV)
         {
             mainCam.fieldOfView = storedCamFOV;
             fallOffAllower = false;
         }
-    } 
+    }
+    private void FOVEffectDelay()//prevents the FOV change from being immediate and overall jarring.
+    {
+        mainCam.fieldOfView += dashFOVEffect / 2;
+    }
 }
