@@ -46,13 +46,13 @@ public class BaseMovement : MonoBehaviour
     public float QBRechargeDelayChecker;
     public float verticalCoolDown;
     public float QBMemoryTime;
+    public float dashAccumulationThreshhold;
     public bool amDashing;
     [SerializeField] private float dashDuration;
     [SerializeField] private float speedLockTimer;
     [SerializeField] private float boostChainFallOff;
     [SerializeField] private float downDashKickDecayTime;
     [HideInInspector] public float dashRechargeInterval;
-    [SerializeField] private float dashAccumulationThreshhold;
     private float speedLockTimerStored;
     private float downDashBounceTimeStored;
     
@@ -186,12 +186,11 @@ public class BaseMovement : MonoBehaviour
 
     private void DashDown()
     {
-        rb.AddForce((transform.up * -1) * QBForce, ForceMode.Impulse);
+        rb.AddForce((transform.up * -1) * QBForce, ForceMode.Impulse);// applies a downward force to the player
         downDashBounceTime = downDashBounceTimeStored;
         dashCount -= 1;
-        canVDash = false;
-        amDashing = true;
-        //Invoke(nameof(ResetQB), QBCoolDown);
+        canVDash = false;// prevents theplayer from holding ctrl and space simoultaniously, draining all their charge instantly
+        amDashing = true;//used for camera calculations and slam pads.
         Invoke(nameof(VerticalDashMemory), verticalCoolDown);
         Invoke(nameof(dashDurationEnd), dashDuration);
         lastQB = 6;
@@ -209,7 +208,6 @@ public class BaseMovement : MonoBehaviour
         amDashing = true;
         Invoke(nameof(QBMemory), QBCoolDown);
         Invoke(nameof(dashDurationEnd), dashDuration);
-        //Invoke(nameof(ResetQB), QBCoolDown);
         Debug.Log("sideboost");
     }
 
@@ -225,7 +223,6 @@ public class BaseMovement : MonoBehaviour
         amDashing = true;
         Invoke(nameof(QBMemory), QBCoolDown);
         Invoke(nameof(dashDurationEnd), dashDuration);
-        //invoke(nameof(resetqb), qbcooldown);
         Debug.Log("forward boost");
     }
 
@@ -283,7 +280,6 @@ public class BaseMovement : MonoBehaviour
         lastQB = 5;
         amDashing = true;
         speedLockTimer = speedLockTimerStored;
-        //Invoke(nameof(ResetQB), QBCoolDown);
         Invoke(nameof(VerticalDashMemory), verticalCoolDown);
         Invoke(nameof(dashDurationEnd), dashDuration);
 
@@ -300,20 +296,24 @@ public class BaseMovement : MonoBehaviour
 
     public void ResetQB()// slowly increases stored charges.
     {
-       if (dashCount != dashCountStored)
+        if (dashCount != dashCountStored)//prevents it from trying to recharge when charges are full
         {
             dashRechargeInterval += Time.deltaTime;
 
-            if (dashRechargeInterval > dashAccumulationThreshhold)
+            if (dashRechargeInterval > dashAccumulationThreshhold)// this is used as opposed to a raw time.deltatime to allow charges to take more time to fill.
             {
                 dashCount += 1;
 
                 dashRechargeInterval = 0;
             }
         }
-       else if (dashCount > dashCountStored)
+        else if (dashCount > dashCountStored)
         {
             dashCount -= 1;
+        }
+        else
+        {
+            dashRechargeInterval = 0;
         }
     }
     public void DownDashKickDecay()

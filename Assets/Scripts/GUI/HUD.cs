@@ -17,6 +17,14 @@ public class HUD : MonoBehaviour
     void Update()
     {
         chargeCounter.text = playerMovementInfo.dashCount.ToString("Charges Remaining: 0");
-        chargeTimer.value = playerMovementInfo.dashRechargeInterval;//this allows the recharge time to display.
+        if (playerMovementInfo.dashCount != 9)
+        {
+            chargeTimer.value = playerMovementInfo.dashRechargeInterval;//this allows the recharge time to display.
+        }
+        else
+        {
+            chargeTimer.value = playerMovementInfo.dashAccumulationThreshhold;
+        }
+
     }
 }

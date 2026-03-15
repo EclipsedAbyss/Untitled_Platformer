@@ -17995,12 +17995,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 503652346927068834, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 503652346927068834, guid: eebd45a6d787bf245ba487712899e772, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 584484814336381340, guid: eebd45a6d787bf245ba487712899e772, type: 3}
       propertyPath: m_Name
       value: LevelTemplate
+      objectReference: {fileID: 0}
+    - target: {fileID: 1737339322785648028, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.4710984
+      objectReference: {fileID: 0}
+    - target: {fileID: 1737339322785648028, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -205.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357151246187984867, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: m_Value
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6334150560662210941, guid: eebd45a6d787bf245ba487712899e772, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18041,6 +18057,14 @@ PrefabInstance:
     - target: {fileID: 6334150560662210941, guid: eebd45a6d787bf245ba487712899e772, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6637419520000922092, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.9435988
+      objectReference: {fileID: 0}
+    - target: {fileID: 6637419520000922092, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -4.7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

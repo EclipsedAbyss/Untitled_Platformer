@@ -46,32 +46,32 @@ public class PlayerCamera : MonoBehaviour
 
         averageLinearSpeed = rb.linearVelocity.magnitude;
         mainCam.fieldOfView = mainCam.fieldOfView;
-    //    if (!playerMovement.amDashing)
-    //    {
-    //        mainCam.fieldOfView = storedCamFOV + averageLinearSpeed;
-    //    }
-    //    else
-    //    {
-    //        if (!fallOffAllower)
-    //        {
-    //            mainCam.fieldOfView += dashFOVEffect;
-    //            fallOffAllower = true;
-    //        }
-               
-    //    }
-    //    if (fallOffAllower && mainCam.fieldOfView > storedCamFOV) 
-    //    {
-    //        mainCam.fieldOfView -= (Time.deltaTime * 25);
-    //    }
+        if (!playerMovement.amDashing)
+        {
+            mainCam.fieldOfView = storedCamFOV + averageLinearSpeed;
+        }
+        else
+        {
+            if (!fallOffAllower)
+            {
+                mainCam.fieldOfView += dashFOVEffect;
+                fallOffAllower = true;
+            }
 
-    //    if (mainCam.fieldOfView > maxFovValue)//just to make sure we dont under or overflow the players fov.
-    //    {
-    //        mainCam.fieldOfView = maxFovValue;
-    //    }
-    //    else if (mainCam.fieldOfView < storedCamFOV)
-    //    {
-    //        mainCam.fieldOfView = storedCamFOV;
-    //        fallOffAllower = false;
-    //    }
+        }
+        if (fallOffAllower && mainCam.fieldOfView > storedCamFOV)
+        {
+            mainCam.fieldOfView -= (Time.deltaTime * 25);
+        }
+
+        if (mainCam.fieldOfView > maxFovValue)//just to make sure we dont under or overflow the players fov.
+        {
+            mainCam.fieldOfView = maxFovValue;
+        }
+        else if (mainCam.fieldOfView < storedCamFOV)
+        {
+            mainCam.fieldOfView = storedCamFOV;
+            fallOffAllower = false;
+        }
     } 
 }
