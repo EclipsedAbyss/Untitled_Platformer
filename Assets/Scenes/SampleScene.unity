@@ -18164,6 +18164,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 232794459253153459, guid: 08439a59d29748844a26a7342b06ae09, type: 3}
+      propertyPath: coolDown
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3092904956385994947, guid: 08439a59d29748844a26a7342b06ae09, type: 3}
       propertyPath: m_Name
       value: SlamPad
@@ -18233,18 +18237,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelTemplate
       objectReference: {fileID: 0}
-    - target: {fileID: 1737339322785648028, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2.4710984
-      objectReference: {fileID: 0}
-    - target: {fileID: 1737339322785648028, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -205.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5357151246187984867, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: m_Value
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 6334150560662210941, guid: eebd45a6d787bf245ba487712899e772, type: 3}
       propertyPath: m_LocalPosition.x
       value: 256.42758
@@ -18285,41 +18277,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6637419520000922092, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.9435988
-      objectReference: {fileID: 0}
-    - target: {fileID: 6637419520000922092, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -4.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8682420700303171773, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: maxFovValue
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 8682420700303171773, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: dashFOVEffect
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8682420700303171773, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: FOVEffectDelayTime
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: iceDrag
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: coyoteTimer
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: dashDuration
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
-      propertyPath: whatIsIce.m_Bits
-      value: 64
+      propertyPath: chargeRechargeGroundedBonus
+      value: 2.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

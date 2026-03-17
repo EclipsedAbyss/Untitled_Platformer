@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class BaseMovement : MonoBehaviour
 {
 
-    [Header("movement")]
+    [Header("movement")]//these are all for basic movement (walking around on the floor)bhn
     public float moveSpeed;
 
     public Transform orientation;
@@ -27,7 +27,6 @@ public class BaseMovement : MonoBehaviour
     public float airmultiplier;
     public float dashCount;
     public float downDashBounce;
-    public float downDashBounceTime;
     public float downDashBounceForce;
     public KeyCode forwardKey = KeyCode.W;
     public KeyCode leftKey = KeyCode.A;
@@ -42,7 +41,7 @@ public class BaseMovement : MonoBehaviour
     private bool canGroundJump;
 
 
-    [Header("QuickBoost Delay Values")]// these were split off the r\prior header for legibilities sake. these are all in relation to cooldowns and delays.
+    [Header("QuickBoost Delay Values")]// these were split off the prior header for legibilities sake. these are all in relation to cooldowns and delays.
     public float QBCoolDown;
     public float QBRecharge;
     public float QBRechargeDelayChecker;
@@ -51,10 +50,12 @@ public class BaseMovement : MonoBehaviour
     public float dashAccumulationThreshhold;
     public float coyoteTimer;
     public bool amDashing;
+    public float downDashBounceTime;
     [SerializeField] private float dashDuration;
     [SerializeField] private float speedLockTimer;
     [SerializeField] private float boostChainFallOff;
     [SerializeField] private float downDashKickDecayTime;
+    [SerializeField] private float chargeRechargeGroundedBonus;//names a bit messy, couldnt figure out a good name. this is just how much the recharge dleay gets multiplied while grounded
     [HideInInspector] public float dashRechargeInterval;
     private float speedLockTimerStored;
     private float downDashBounceTimeStored;
@@ -117,11 +118,6 @@ public class BaseMovement : MonoBehaviour
         speedLockTimer -= Time.deltaTime;
         downDashBounceTime -= Time.deltaTime;
         
-
-        if (downDashBounceTime > 0 && onGround)// this allows the player to bounce when downdashing into the floor. not extremely useful but its kinda fun and could definately have use cases
-        {
-            Jump();
-        }
     }
 
     private void FixedUpdate()
@@ -201,7 +197,7 @@ public class BaseMovement : MonoBehaviour
     private void DashDown()
     {
         rb.AddForce((transform.up * -1) * QBForce, ForceMode.Impulse);// applies a downward force to the player
-        downDashBounceTime = downDashBounceTimeStored;
+        downDashBounceTime = downDashBounceTimeStored;//allows a higher jump after dashing into the ground from midair. was originally done automatically but turned out EXTREMELY annoying in practice.
         dashCount -= 1;
         canVDash = false;// prevents theplayer from holding ctrl and space simoultaniously, draining all their charge instantly
         amDashing = true;//used for camera calculations and slam pads.
@@ -260,7 +256,7 @@ public class BaseMovement : MonoBehaviour
         }
         else 
         {
-            rb.AddForce(10 * airmultiplier * moveSpeed * MovementDirection.normalized, ForceMode.Force);
+            rb.AddForce(10 * airmultiplier * moveSpeed * MovementDirection.normalized, ForceMode.Force);//used for air movement so that it doesnt feel identical to grounded movement.
         }
     }
     private void SpeedControl()
@@ -313,14 +309,22 @@ public class BaseMovement : MonoBehaviour
     {
         if (dashCount != dashCountStored)//prevents it from trying to recharge when charges are full
         {
-            dashRechargeInterval += Time.deltaTime;
 
+            if (onGround)
+            {
+                dashRechargeInterval += Time.deltaTime * chargeRechargeGroundedBonus;
+            }
+            else
+            {
+                dashRechargeInterval += Time.deltaTime;//this if statement exists so that dashes recharge faster when grounded.
+            }
             if (dashRechargeInterval > dashAccumulationThreshhold)// this is used as opposed to a raw time.deltatime to allow charges to take more time to fill.
             {
                 dashCount += 1;
 
                 dashRechargeInterval = 0;
             }
+
         }
         else if (dashCount > dashCountStored)
         {
@@ -331,15 +335,15 @@ public class BaseMovement : MonoBehaviour
             dashRechargeInterval = 0;
         }
     }
-    public void DownDashKickDecay()
+    public void DownDashKickDecay()//decays the downdash boost increase
     {
         downDashPrepKick = 1;
     }
-    public void dashDurationEnd()
+    public void dashDurationEnd()// ends the dash duration
     {
         amDashing = false;
     }
-    public void CoyoteTime()
+    public void CoyoteTime()// ends the coyoteTIme grace period.
     {
         canGroundJump = false;
     }
