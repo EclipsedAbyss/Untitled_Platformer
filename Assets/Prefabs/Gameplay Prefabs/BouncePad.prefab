@@ -29,11 +29,12 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6191893179818916741}
+  - {fileID: 4377506408353877963}
+  - {fileID: 4989803391086916966}
   - {fileID: 8502127851629621351}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8552152730661974278
+--- !u!1 &2775354997129858655
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,10 +42,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6191893179818916741}
-  - component: {fileID: 8262643296049358686}
-  - component: {fileID: 4878370206151209275}
-  - component: {fileID: 3459192593501550111}
+  - component: {fileID: 4989803391086916966}
+  - component: {fileID: 5085116546725129525}
+  - component: {fileID: 2215230082406952945}
+  - component: {fileID: 3983687940120637866}
   m_Layer: 0
   m_Name: BouncePadCollision
   m_TagString: Untagged
@@ -52,36 +53,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6191893179818916741
+--- !u!4 &4989803391086916966
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8552152730661974278}
+  m_GameObject: {fileID: 2775354997129858655}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3, y: -0.32168245, z: -0.491}
-  m_LocalScale: {x: 2.303019, y: 1, z: 2.2933302}
+  m_LocalPosition: {x: 0.3, y: 0.098, z: -0.491}
+  m_LocalScale: {x: 2.6284356, y: 0.14552, z: 2.6407697}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5687933880405364501}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8262643296049358686
+--- !u!33 &5085116546725129525
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8552152730661974278}
+  m_GameObject: {fileID: 2775354997129858655}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!65 &4878370206151209275
+--- !u!65 &2215230082406952945
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8552152730661974278}
+  m_GameObject: {fileID: 2775354997129858655}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -96,19 +97,81 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3459192593501550111
+--- !u!114 &3983687940120637866
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8552152730661974278}
+  m_GameObject: {fileID: 2775354997129858655}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b118402133c42b54e9e4c8b42f3e2307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bouncePadForce: 0
+  bouncePadForce: 10
+--- !u!1 &7884626278423006796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4377506408353877963}
+  - component: {fileID: 1457890485486773257}
+  - component: {fileID: 2312464710236997176}
+  m_Layer: 0
+  m_Name: BouncePadPhysicsCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4377506408353877963
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7884626278423006796}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.36237907, y: 0.038, z: -0.46800232}
+  m_LocalScale: {x: 2.9898, y: 0.0751, z: 2.9286745}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5687933880405364501}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &1457890485486773257
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7884626278423006796}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &2312464710236997176
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7884626278423006796}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &8248089011158767500
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -171,7 +234,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 289899ce67f835944aa107824bbd8659, type: 2}
     - target: {fileID: 919132149155446097, guid: 92baadb722568c643ac167d3adff2fb8, type: 3}
       propertyPath: m_Name
-      value: model 1
+      value: BouncePadModelemp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

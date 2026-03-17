@@ -41,9 +41,8 @@ public class SlamPad : MonoBehaviour
     }
     private void Update()
     {
-        if (coolDown > 0)//im not sureif eternally decreasing a value could cause problems or not but this is here just in case.
-        {
+        
             coolDown -= Time.deltaTime;
-        }
+
     }
 }

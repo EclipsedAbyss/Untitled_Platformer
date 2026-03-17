@@ -28,8 +28,8 @@ Transform:
   m_GameObject: {fileID: 110882780729403151}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3, y: -0.32168245, z: -0.491}
-  m_LocalScale: {x: 2.303019, y: 1, z: 2.2933302}
+  m_LocalPosition: {x: 0.3, y: 0.058, z: -0.491}
+  m_LocalScale: {x: 2.6284356, y: 0.14552, z: 2.6407697}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7194642028218270667}
@@ -75,6 +75,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fa74c3538fedfc459cb4ab871eee6d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  singleUse: 0
+  coolDown: 1
+--- !u!1 &1800707480235754887
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7685003582125884916}
+  - component: {fileID: 8148747263895708334}
+  - component: {fileID: 3636718222601641002}
+  m_Layer: 0
+  m_Name: SlamPadPhysicsCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7685003582125884916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800707480235754887}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.36237907, y: 0.038, z: -0.46800232}
+  m_LocalScale: {x: 2.9898, y: 0.0751, z: 2.9286745}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7194642028218270667}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &8148747263895708334
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800707480235754887}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &3636718222601641002
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800707480235754887}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3092904956385994947
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,6 +168,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7685003582125884916}
   - {fileID: 1327523485201585038}
   - {fileID: 8987938274828339993}
   m_Father: {fileID: 0}
@@ -170,7 +235,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e6a4b6f4738db224db1e2869259dd18b, type: 2}
     - target: {fileID: 919132149155446097, guid: 92baadb722568c643ac167d3adff2fb8, type: 3}
       propertyPath: m_Name
-      value: model 1
+      value: SlamPadModelTemp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

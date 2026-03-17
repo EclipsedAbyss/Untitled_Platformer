@@ -9,10 +9,11 @@ public class BaseMovement : MonoBehaviour
 
     [Header("movement")]//these are all for basic movement (walking around on the floor)bhn
     public float moveSpeed;
-
+    public float overSpeed;
     public Transform orientation;
     float horizontalInput;
     float verticalInput;
+    private float overSpeedThreshhold;
     [HideInInspector] public float grounded;
     Vector3 MovementDirection;
     public float groundDrag;
@@ -26,15 +27,16 @@ public class BaseMovement : MonoBehaviour
     public float QBForceMult;
     public float airmultiplier;
     public float dashCount;
-    public float downDashBounce;
     public float downDashBounceForce;
     public KeyCode forwardKey = KeyCode.W;
     public KeyCode leftKey = KeyCode.A;
     public KeyCode backwardKey = KeyCode.S;
     public KeyCode rightKey = KeyCode.D;// inputs stored for detecting direction dash is being performed in.
+    [HideInInspector] public float downDashBounce;
     [HideInInspector] public float dashDirection;
     [HideInInspector] public float dashCountStored;
     [HideInInspector] public float lastQB; // 0 is none, 1 is forward, 2 is back, 3 is left, 4 is right. the numbers are inconsequental aside from allowing a cooldown bypass by chainboosting(this is intended). 
+    [HideInInspector] public float cachedQB; //used to cache another prior Qb, as a means to avoid issues caused by 2 buttons being held at once. as a consquence, chaining is now slightly harder to pull off.
     [HideInInspector] private bool canVDash;// allows cancelling a circumstance where the player holds space and ctrl simoultaniously draining all of their charges.
     [HideInInspector] public float downDashPrepKick;//used to store the bonus force for the boost
     [SerializeField] private float groundedBonusForce;//used to set the bonus force gained from a grounded downdash
@@ -83,6 +85,7 @@ public class BaseMovement : MonoBehaviour
         downDashBounceTime = 0;// clears the timer to avoid it firing prematurely
         speedLockTimer = 0;//same as above
         canVDash = true;
+        overSpeedThreshhold = moveSpeed + 1;
     }
 
     private void Update()
@@ -114,10 +117,8 @@ public class BaseMovement : MonoBehaviour
             rb.linearDamping = 0;
 
         }
-
         speedLockTimer -= Time.deltaTime;
         downDashBounceTime -= Time.deltaTime;
-        
     }
 
     private void FixedUpdate()
@@ -128,23 +129,24 @@ public class BaseMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(jumpKey) && dashCount > 0 && !onGround && canVDash)// allows for midair jumping (up dash)
+        if (Input.GetKeyDown(jumpKey) && dashCount > 0 && !onGround && canVDash)// allows for midair jumping (up dash)
         {
             Jump();
+            amDashing = true;
             dashCount -= 1;
             Debug.Log("UpBoost");
         }
-        else if (Input.GetKey(jumpKey) && canGroundJump && canVDash)// allows grunded jumps (does not consume a charge)
+        else if (Input.GetKeyDown(jumpKey) && canGroundJump && canVDash)// allows grunded jumps (does not consume a charge)
         {
             Jump();
             Debug.Log("Jump");
         }
 
-        if (Input.GetKey(downDash) && dashCount > 0 && !onGround && canVDash)// allows to down dash
+        if (Input.GetKeyDown(downDash) && dashCount > 0 && !onGround && canVDash)// allows to down dash
         {
             DashDown();
         }
-        else if (Input.GetKey(downDash) && dashCount > 0 && onGround && canVDash)//allows to down dash immediately into a horizontal dash while grounded for a larger result, at the cost of an extra charge.
+        else if (Input.GetKeyDown(downDash) && dashCount > 0 && onGround && canVDash)//allows to down dash immediately into a horizontal dash while grounded for a larger result, at the cost of an extra charge.
         {
             canVDash = false;
             dashCount -= 1;
@@ -158,7 +160,7 @@ public class BaseMovement : MonoBehaviour
         {
             if (dashCount > 0 && Input.GetKey(backwardKey))// placed at the top for highest priority, gets the player holding back and dashes in that direction
             {
-                if (lastQB != 2)
+                if (lastQB != 2 && cachedQB != 2)
                 {
                     dashDirection = -1;
                     ForwardDash();
@@ -167,7 +169,7 @@ public class BaseMovement : MonoBehaviour
             }
             else if (dashCount > 0 && Input.GetKey(leftKey))//these 2 (left and right) were essentially a coin toss in priority since realistically noone should try to do both at once
             {
-                if (lastQB != 3)
+                if (lastQB != 3 && cachedQB != 3)
                 {
                     dashDirection = -1;// to allow for less obtuse coode, both side dashes run the same function but just reverse the actual directionit is sent. the same applies to forward and back.
                     SideDash();
@@ -175,7 +177,7 @@ public class BaseMovement : MonoBehaviour
             }
             else if (dashCount > 0 && Input.GetKey(rightKey))
             {
-                if (lastQB != 4)
+                if (lastQB != 4 && cachedQB != 4)
                 {
                     dashDirection = 1;
                     SideDash();
@@ -189,7 +191,6 @@ public class BaseMovement : MonoBehaviour
                     dashDirection = 1;
                     ForwardDash();
                 }
-
             }
         }
     }
@@ -199,11 +200,12 @@ public class BaseMovement : MonoBehaviour
         rb.AddForce((transform.up * -1) * QBForce, ForceMode.Impulse);// applies a downward force to the player
         downDashBounceTime = downDashBounceTimeStored;//allows a higher jump after dashing into the ground from midair. was originally done automatically but turned out EXTREMELY annoying in practice.
         dashCount -= 1;
+        cachedQB = lastQB;
+        lastQB = 6;
         canVDash = false;// prevents theplayer from holding ctrl and space simoultaniously, draining all their charge instantly
         amDashing = true;//used for camera calculations and slam pads.
         Invoke(nameof(VerticalDashMemory), verticalCoolDown);
         Invoke(nameof(dashDurationEnd), dashDuration);
-        lastQB = 6;
         Debug.Log("DownBoost");
     }
 
@@ -211,6 +213,7 @@ public class BaseMovement : MonoBehaviour
     {
        rb.AddForce((transform.right * dashDirection) * (QBForce * QBForceMult * downDashPrepKick), ForceMode.Impulse);
         dashCount -= 1;
+        cachedQB = lastQB;
         if (dashDirection == -1)
             lastQB = 3;
         else if (dashDirection == 1)
@@ -225,6 +228,7 @@ public class BaseMovement : MonoBehaviour
     {
         rb.AddForce((transform.forward * dashDirection) * (QBForce * QBForceMult * downDashPrepKick), ForceMode.Impulse);
         dashCount -= 1;
+        cachedQB = lastQB;
         lastQB = 2;
         if (dashDirection == -1)
             lastQB = 2;
@@ -259,14 +263,23 @@ public class BaseMovement : MonoBehaviour
             rb.AddForce(10 * airmultiplier * moveSpeed * MovementDirection.normalized, ForceMode.Force);//used for air movement so that it doesnt feel identical to grounded movement.
         }
     }
-    private void SpeedControl()
+    private void SpeedControl()//this controls speed limits, and prevents attaining max speed by exclusively walking.
     {
-        Vector3 flatVel = new(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        Vector3 flatVel = new(rb.linearVelocity.x, 0, rb.linearVelocity.z);//gets the players flat velocity
 
-        if (flatVel.magnitude > moveSpeed)
+        if (flatVel.magnitude > moveSpeed && flatVel.magnitude < overSpeedThreshhold)//caps the base plaer speed
         {
          Vector3 limitedVel = flatVel.normalized * moveSpeed;
             rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+        }
+        else if (flatVel.magnitude > overSpeedThreshhold && flatVel.magnitude < overSpeed)//reduces speed ofver the default cap over time, to help incentivise quick movement
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x - Time.deltaTime / 2, rb.linearVelocity.y, rb.linearVelocity.z  - Time.deltaTime / 2);
+        }
+        else if(flatVel.magnitude > overSpeed)// caps the over speed.
+        {
+            Vector3 limitedOverVel = flatVel.normalized * overSpeed;
+            rb.linearVelocity = new Vector3(limitedOverVel.x, rb.linearVelocity.y, limitedOverVel.z);
         }
     }
     private void Jump()// allows to jump
@@ -289,7 +302,6 @@ public class BaseMovement : MonoBehaviour
         }
 
         lastQB = 5;
-        amDashing = true;
         speedLockTimer = speedLockTimerStored;
         Invoke(nameof(VerticalDashMemory), verticalCoolDown);
         Invoke(nameof(dashDurationEnd), dashDuration);
@@ -298,6 +310,7 @@ public class BaseMovement : MonoBehaviour
     }
     public void QBMemory()// remembers the last quickboost performed to allow chainboosting. chainboosting is an idea taken from an animation cancel exploit found in armoured core for answer.
     {
+        cachedQB = 0;
         lastQB = 0;
     }
     public void VerticalDashMemory()//allows to do the same as above but for dashing up and down

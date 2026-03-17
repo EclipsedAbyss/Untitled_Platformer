@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class HUD : MonoBehaviour
+public class HUDController : MonoBehaviour
 {
     //this script is entirely focused on the main heads up display while partaking in gameplay.
     [SerializeField] TextMeshProUGUI chargeCounter;
