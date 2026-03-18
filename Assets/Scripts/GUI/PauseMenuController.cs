@@ -1,11 +1,12 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
     private bool paused;
     private bool OverFlowBlock;
-    private bool resumePress;
+    public bool resumePress;
     private DeathHudController playerDeathTracker;
     [SerializeField] GameObject pauseHUD;
 
@@ -43,9 +44,16 @@ public class PauseMenuController : MonoBehaviour
         resumePress = true;
     }
 
+    public void Restart()
+    {
+        resumePress = true;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public void QuitToMenu()
     {
-        //TBD
+        resumePress = true;
+        SceneManager.LoadScene(0);
     }
 
     public void QuitToDesktop()

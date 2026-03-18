@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class HUDController : MonoBehaviour
 {
     //this script is entirely focused on the main heads up display while partaking in gameplay.
-    [SerializeField] TextMeshProUGUI chargeCounter;
+    [SerializeField] TextMeshProUGUI chargeCounterRaw;
     [SerializeField] BaseMovement playerMovementInfo;
     [SerializeField] Slider chargeTimer;
+    [SerializeField] Slider chargeDisplay;
+    [SerializeField] TextMeshProUGUI Timer;
     void Start()
     {
         
@@ -16,7 +18,8 @@ public class HUDController : MonoBehaviour
 
     void Update()
     {
-        chargeCounter.text = playerMovementInfo.dashCount.ToString("Charges Remaining: 0");
+        chargeDisplay.value = playerMovementInfo.dashCount;
+        chargeCounterRaw.text = playerMovementInfo.dashCount.ToString("Charges Remaining: 0");
         if (playerMovementInfo.dashCount != 9)
         {
             chargeTimer.value = playerMovementInfo.dashRechargeInterval;//this allows the recharge time to display.

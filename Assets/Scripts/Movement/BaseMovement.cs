@@ -41,6 +41,7 @@ public class BaseMovement : MonoBehaviour
     [HideInInspector] public float downDashPrepKick;//used to store the bonus force for the boost
     [SerializeField] private float groundedBonusForce;//used to set the bonus force gained from a grounded downdash
     private bool canGroundJump;
+    private float dashCountLenienceStored;
 
 
     [Header("QuickBoost Delay Values")]// these were split off the prior header for legibilities sake. these are all in relation to cooldowns and delays.
@@ -57,13 +58,16 @@ public class BaseMovement : MonoBehaviour
     [SerializeField] private float speedLockTimer;
     [SerializeField] private float boostChainFallOff;
     [SerializeField] private float downDashKickDecayTime;
-    [SerializeField] private float chargeRechargeGroundedBonus;//names a bit messy, couldnt figure out a good name. this is just how much the recharge dleay gets multiplied while grounded
+    [SerializeField] private float chargeRechargeGroundedBonus;//names a bit messy, couldnt figure out a good name. this is just how much the recharge delay gets multiplied while grounded
+    [SerializeField] private float chargeExpendedLeniencyDelay;
     [HideInInspector] public float dashRechargeInterval;
     private float speedLockTimerStored;
     private float downDashBounceTimeStored;
-    
+    private bool lenienceStackBlock;
 
-    
+
+
+
 
     [Header("keybinds")]// actual input bindings. the priorly listed wasd are not really inputs but more just detection.
     public KeyCode jumpKey = KeyCode.Space;
@@ -75,6 +79,7 @@ public class BaseMovement : MonoBehaviour
     public LayerMask whatIsGround;
     public LayerMask whatIsIce;
     bool onGround;
+    private bool canCoyoteTime;
 
     private void Start()
     {
@@ -86,6 +91,8 @@ public class BaseMovement : MonoBehaviour
         speedLockTimer = 0;//same as above
         canVDash = true;
         overSpeedThreshhold = moveSpeed + 1;
+        canCoyoteTime = true;
+
     }
 
     private void Update()
@@ -94,27 +101,31 @@ public class BaseMovement : MonoBehaviour
         InputRegister();// used to detect inputs
         SpeedControl();// used for drag on ground
         ResetQB();// used to recharge the players useable charge count.
+        DashExpendLenience();
 
 
         bool grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);// this allows the player to know what ground is
         bool sliding = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsIce);//allows the player to have different movement on ice.
-        if (grounded && !amDashing)
+        if (grounded)
         {
             rb.linearDamping = groundDrag;
             onGround = true;
             canGroundJump = true;
+            canCoyoteTime = true;
         }
-        else if(sliding && !amDashing)
+        else if(sliding)
         {
             rb.linearDamping = iceDrag;
             onGround = true;
             canGroundJump = true;
+            canCoyoteTime = true;
         }
-        else
+        else if (canCoyoteTime)
         {
             Invoke(nameof(CoyoteTime), coyoteTimer);
             onGround = false;
             rb.linearDamping = 0;
+            canCoyoteTime = false;
 
         }
         speedLockTimer -= Time.deltaTime;
@@ -129,18 +140,19 @@ public class BaseMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKeyDown(jumpKey) && dashCount > 0 && !onGround && canVDash)// allows for midair jumping (up dash)
+        if (Input.GetKeyDown(jumpKey) && canGroundJump && canVDash)// allows grunded jumps (does not consume a charge)
+        {
+            Jump();
+            Debug.Log("Jump");
+        }
+        else if (Input.GetKeyDown(jumpKey) && dashCount > 0 && !canGroundJump && canVDash)// allows for midair jumping (up dash)
         {
             Jump();
             amDashing = true;
             dashCount -= 1;
             Debug.Log("UpBoost");
         }
-        else if (Input.GetKeyDown(jumpKey) && canGroundJump && canVDash)// allows grunded jumps (does not consume a charge)
-        {
-            Jump();
-            Debug.Log("Jump");
-        }
+      
 
         if (Input.GetKeyDown(downDash) && dashCount > 0 && !onGround && canVDash)// allows to down dash
         {
@@ -359,5 +371,27 @@ public class BaseMovement : MonoBehaviour
     public void CoyoteTime()// ends the coyoteTIme grace period.
     {
         canGroundJump = false;
+    }
+    public void DashExpendLenience()
+    {
+        if (dashCount - 2 > 1)
+        {
+            if (dashCountLenienceStored > (dashCount - 1))
+            {
+                dashCount += 1;
+            }
+        }
+        if(lenienceStackBlock)
+        {
+            Invoke(nameof(DashExpendLenienceFire), chargeExpendedLeniencyDelay);
+            lenienceStackBlock = false;
+        }
+       
+
+    }
+    public void DashExpendLenienceFire()
+    {
+        dashCountLenienceStored = dashCount;
+        lenienceStackBlock = true;
     }
 }
