@@ -4,8 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class VictoryScreenController : MonoBehaviour
 {
+    public bool FinalLevel;
     [SerializeField] GameObject VictoryHud;
     [SerializeField] PauseMenuController pauseMenuButtons;
+
+
 
     private void Start()
     {
@@ -20,7 +23,14 @@ public class VictoryScreenController : MonoBehaviour
 
     public void Next()
     {
-       
+       if (FinalLevel)
+        {
+            SceneManager.LoadScene(0);
+        }
+       else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
 
     }
 
@@ -39,4 +49,12 @@ public class VictoryScreenController : MonoBehaviour
         pauseMenuButtons.QuitToDesktop();
     }
 
+    public void OnLevelEnd()
+    {
+        VictoryHud.SetActive(true);
+        Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+    }
 }

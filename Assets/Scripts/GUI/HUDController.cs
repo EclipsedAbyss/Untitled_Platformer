@@ -6,15 +6,11 @@ using UnityEngine.UI;
 public class HUDController : MonoBehaviour
 {
     //this script is entirely focused on the main heads up display while partaking in gameplay.
+    public GameObject HUDCanvas;
     [SerializeField] TextMeshProUGUI chargeCounterRaw;
     [SerializeField] BaseMovement playerMovementInfo;
     [SerializeField] Slider chargeTimer;
     [SerializeField] Slider chargeDisplay;
-    [SerializeField] TextMeshProUGUI Timer;
-    void Start()
-    {
-        
-    }
 
     void Update()
     {

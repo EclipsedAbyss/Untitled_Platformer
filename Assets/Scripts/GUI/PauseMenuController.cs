@@ -41,17 +41,20 @@ public class PauseMenuController : MonoBehaviour
 
     public void Resume()
     {
+        paused = true;
         resumePress = true;
     }
 
     public void Restart()
     {
+        paused = true;
         resumePress = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void QuitToMenu()
     {
+        paused = true;
         resumePress = true;
         SceneManager.LoadScene(0);
     }
