@@ -22,7 +22,7 @@ public class SlamPad : MonoBehaviour
                 playerMovement = other.GetComponent<BaseMovement>();
                 if (playerMovement.amDashing)
                 {
-                    playerMovement.dashCount = playerMovement.dashCountStored;
+                    playerMovement.dashCount = playerMovement.dashCountStored;//refills the players dashes.
                     hitstopfirer.OnHitStopStart();//fires the hit stop FX script.
                     playerMovement = null;
                     coolDown = coolDownStored;
@@ -42,7 +42,7 @@ public class SlamPad : MonoBehaviour
     private void Update()
     {
         
-            coolDown -= Time.deltaTime;
+            coolDown -= Time.deltaTime;//reduces the cooldown if the pad isnt a one time use (this should be used primarily in the tutorial to avoid frustration, however a visual cue would be nice.
 
     }
 }

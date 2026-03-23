@@ -7,6 +7,7 @@ public class VictoryScreenController : MonoBehaviour
     public bool FinalLevel;
     [SerializeField] GameObject VictoryHud;
     [SerializeField] PauseMenuController pauseMenuButtons;
+    [HideInInspector] public bool levelEnded;
 
 
 
@@ -19,17 +20,19 @@ public class VictoryScreenController : MonoBehaviour
     {
         Time.timeScale = 0;
         VictoryHud.SetActive(true);
+        levelEnded = true;
     }
 
     public void Next()
     {
-       if (FinalLevel)
+        Time.timeScale = 1;
+        if (FinalLevel)
         {
             SceneManager.LoadScene(0);
         }
        else
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
     }

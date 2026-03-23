@@ -225,7 +225,14 @@ public class BaseMovement : MonoBehaviour
     {
        rb.AddForce((transform.right * dashDirection) * (QBForce * QBForceMult * downDashPrepKick), ForceMode.Impulse);
         dashCount -= 1;
-        cachedQB = lastQB;
+        if (lastQB !=1)
+        {
+            cachedQB = lastQB;
+        }
+        else
+        {
+            cachedQB = 0;
+        }
         if (dashDirection == -1)
             lastQB = 3;
         else if (dashDirection == 1)
@@ -240,7 +247,14 @@ public class BaseMovement : MonoBehaviour
     {
         rb.AddForce((transform.forward * dashDirection) * (QBForce * QBForceMult * downDashPrepKick), ForceMode.Impulse);
         dashCount -= 1;
-        cachedQB = lastQB;
+        if (lastQB != 1)
+        {
+            cachedQB = lastQB;
+        }
+        else
+        {
+            cachedQB = 0;
+        }
         lastQB = 2;
         if (dashDirection == -1)
             lastQB = 2;
@@ -258,7 +272,7 @@ public class BaseMovement : MonoBehaviour
 
         if (onGround)
         {
-            rb.AddForce(10 * moveSpeed * MovementDirection.normalized, ForceMode.Force);
+            rb.AddForce(10 * moveSpeed * MovementDirection.normalized, ForceMode.Acceleration);
 
             if (QBRechargeDelayChecker < dashCount)
             {

@@ -14,7 +14,7 @@ public class HitStopEffects : MonoBehaviour
         hitStopLight.SetActive(false);
         HitStopLengthStored = hitStopLength;// saves the stored value
     }
-    public void OnHitStopStart()
+    public void OnHitStopStart()//fired from the slam pad, runs the hitstop VFX.
     {
         hitStopLength = HitStopLengthStored;// resets the stored value
         hitStop = true;
@@ -22,7 +22,7 @@ public class HitStopEffects : MonoBehaviour
         hitStopLight.SetActive(true);
         Time.timeScale = 0;
     }
-    private void Update()
+    private void Update()//this allows the hitstop time to actually decay and thus, end.
     {
         if (hitStop)
         {
@@ -33,7 +33,7 @@ public class HitStopEffects : MonoBehaviour
             }
         }
     }
-    private void OnHitStopEnd()
+    private void OnHitStopEnd()// ends the hitstop and resumes normal play.
     {
         hitStop = false;
         hitStopLight.SetActive(false);

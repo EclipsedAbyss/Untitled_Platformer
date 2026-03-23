@@ -13,11 +13,11 @@ public class Glass : MonoBehaviour
             playerMovement = other.GetComponent<BaseMovement>();
             if (playerMovement.amDashing)
             {
-                Destroy(glass);
+                Destroy(glass);//destroys the glass
             }
             else
             {
-                playerMovement = null;
+                playerMovement = null; //clears the player movement to prevent any possible issues retaining it may induce.
             }
         }
     }

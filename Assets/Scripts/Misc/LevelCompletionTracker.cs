@@ -9,19 +9,23 @@ public class LevelCompletionTracker : MonoBehaviour
     [HideInInspector] public float level2_BestTime = -1;
     [HideInInspector] public float level3_BestTime = -1;
     [HideInInspector] public float level4_BestTime = -1;
-    [HideInInspector] public float level5_BestTime = -1;
     public bool isLevelCompleted;
     public float currentLevelBestTime;
     private TimerController timer;
-    private VictoryScreenController VSC;
-    private void Start()
+
+
+    private void OnEnable()
     {
-        DontDestroyOnLoad(gameObject);
         LevelCompletionTracker[] duplicates = FindObjectsByType<LevelCompletionTracker>(FindObjectsSortMode.None);
         if (duplicates.Length > 1)
         {
             Destroy(gameObject);
         }
+    }
+    private void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+      
     }
 
     public void GetLevelIndex()
@@ -32,23 +36,23 @@ public class LevelCompletionTracker : MonoBehaviour
         switch (currentLevel)
         {
             case 1:
-                LevelOne();
+                Tutorial();
             break;
 
             case 2:
-                LevelTwo();
+                LevelOne();
             break;
 
             case 3:
-                LevelThree();
+                LevelTwo();
             break;
 
             case 4:
-                LevelFour();
+                LevelThree();
             break;
 
             case 5:
-                LevelFive();
+                LevelFour();
             break;
 
             default:
@@ -57,7 +61,10 @@ public class LevelCompletionTracker : MonoBehaviour
         }
     }
 
-
+    public void Tutorial()
+    {
+        //do nothing.
+    }
     public void LevelOne()
     {
         if (level1_BestTime != -1)
@@ -92,14 +99,6 @@ public class LevelCompletionTracker : MonoBehaviour
         }
         currentLevelBestTime = level4_BestTime;
     }
-    public void LevelFive()
-    {
-        if (level1_BestTime != -1)
-        {
-            isLevelCompleted = true;
-        }
-        currentLevelBestTime = level5_BestTime;
-    }
 
     public void OnLevelCompletion()
     {
@@ -118,24 +117,20 @@ public class LevelCompletionTracker : MonoBehaviour
         {
             switch (currentLevel)// detects the current level and uses its specific stored time values.
             {
-                case 1:
+                case 2:
                     level1_BestTime = timer.timerValue;
                 break;
 
-                case 2:
+                case 3:
                     level2_BestTime = timer.timerValue;
                 break;
 
-                case 3:
+                case 4:
                     level3_BestTime = timer.timerValue;
                 break;
 
-                case 4:
-                    level4_BestTime = timer.timerValue;
-                break;
-
                 case 5:
-                    level5_BestTime = timer.timerValue;
+                    level4_BestTime = timer.timerValue;
                 break;
 
                 default:

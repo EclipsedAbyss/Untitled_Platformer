@@ -11,21 +11,24 @@ public class TimerController : MonoBehaviour
     public TextMeshProUGUI differenceInTime;
     public TextMeshProUGUI differenceInTimeText;
     public TextMeshProUGUI prevBestTimeText;
-    private LevelCompletionTracker LCT;
+    private LevelCompletionTracker LCT;// about 75% of these fields are NOT used in this script, but rather are stored here to allow the Level COmpletion Tracker to access them all without running more then one findObject.
 
     public float timerValue;
 
     private void Start()
     {
         LCT = FindFirstObjectByType<LevelCompletionTracker>();
-        if (LCT.isLevelCompleted == false)
+        if (LCT != null )
         {
-            timer.enabled = false;
+            if (LCT.isLevelCompleted == false)
+            {
+                timer.enabled = false;//disables the timer if this is the players first time in the level.
+            }
         }
     }
     private void Update()
     {
         timerValue += Time.deltaTime;
-        timer.text = timerValue.ToString("0:00.00");
+        timer.text = timerValue.ToString("0:00.00");//simply increments the timer.
     }
 }

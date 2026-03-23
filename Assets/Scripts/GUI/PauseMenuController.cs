@@ -9,6 +9,7 @@ public class PauseMenuController : MonoBehaviour
     public bool resumePress;
     private DeathHudController playerDeathTracker;
     [SerializeField] GameObject pauseHUD;
+    [SerializeField] VictoryScreenController VSC;
 
     private void Start()
     {
@@ -16,25 +17,28 @@ public class PauseMenuController : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && playerDeathTracker.playerDie == false || resumePress == true)
+        if (!VSC.levelEnded)
         {
-            if (!paused)
+            if (Input.GetKeyDown(KeyCode.Escape) && playerDeathTracker.playerDie == false || resumePress == true)
             {
-                Time.timeScale = 0;
-                paused = true;
-                Cursor.lockState = CursorLockMode.None;
-                pauseHUD.SetActive(true);
-                Cursor.visible = true;
-                resumePress = false;
-            }
-            else
-            {
-                Time.timeScale = 1;
-                paused = false;
-                Cursor.lockState = CursorLockMode.Locked;
-                pauseHUD.SetActive(false);
-                Cursor.visible = false;
-                resumePress = false;
+                if (!paused)
+                {
+                    Time.timeScale = 0;
+                    paused = true;
+                    Cursor.lockState = CursorLockMode.None;
+                    pauseHUD.SetActive(true);
+                    Cursor.visible = true;
+                    resumePress = false;
+                }
+                else
+                {
+                    Time.timeScale = 1;
+                    paused = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    pauseHUD.SetActive(false);
+                    Cursor.visible = false;
+                    resumePress = false;
+                }
             }
         }
     }
