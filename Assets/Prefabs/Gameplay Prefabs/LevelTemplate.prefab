@@ -842,6 +842,7 @@ MonoBehaviour:
   differenceInTimeText: {fileID: 7352598928100687535}
   prevBestTimeText: {fileID: 7492902917184087251}
   timerValue: 0
+  MinuteTicker: 0
 --- !u!1 &1347611326932628252
 GameObject:
   m_ObjectHideFlags: 0
@@ -2958,10 +2959,10 @@ MonoBehaviour:
   orientation: {fileID: 6667348167635368911}
   grounded: 0
   groundDrag: 5
-  iceDrag: 0.5
+  iceDrag: 1
   QBForce: 10
-  QBForceMult: 1.5
-  airmultiplier: 1
+  QBForceMult: 2
+  airmultiplier: 0.5
   dashCount: 9
   downDashBounceForce: 1
   forwardKey: 119
@@ -2989,7 +2990,7 @@ MonoBehaviour:
   boostChainFallOff: 10
   downDashKickDecayTime: 1
   chargeRechargeGroundedBonus: 2.5
-  chargeExpendedLeniencyDelay: 0.05
+  chargeExpendedLeniencyDelay: 0.01
   dashRechargeInterval: 0
   jumpKey: 32
   QBKey: 304
@@ -3366,7 +3367,7 @@ MonoBehaviour:
   sensitivityX: 400
   sensitivityY: 400
   dashFOVEffect: 10
-  orientation: {fileID: 5295569220873734229}
+  orientation: {fileID: 6667348167635368911}
   maxFovValue: 40
   FOVEffectDelayTime: 0.1
 --- !u!1 &3647970414750420137
@@ -6222,7 +6223,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0:00:00
+  m_text: 0:00.00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -9,7 +9,9 @@ public class BouncePad : MonoBehaviour
         if (other.GetComponent<BaseMovement>() != null)
         {
             playerRB = other.GetComponent<Rigidbody>();
+            playerRB.linearVelocity = Vector3.zero;
             playerRB.AddForce(this.transform.up * (bouncePadForce), ForceMode.Impulse);
+            playerRB = null;
         }
     }
 }
