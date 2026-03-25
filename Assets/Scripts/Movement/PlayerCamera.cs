@@ -25,7 +25,7 @@ public class PlayerCamera : MonoBehaviour
         Cursor.visible = false;
         playerMovement = FindFirstObjectByType<BaseMovement>();
         player = playerMovement.gameObject;
-        orientation = playerMovement.transform;
+        orientation = player.transform;
         rb = player.GetComponent<Rigidbody>();
         mainCam = this.GetComponent<Camera>();
         storedCamFOV = mainCam.fieldOfView;

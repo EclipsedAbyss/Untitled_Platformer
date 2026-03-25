@@ -2990,11 +2990,11 @@ MonoBehaviour:
   boostChainFallOff: 10
   downDashKickDecayTime: 1
   chargeRechargeGroundedBonus: 2.5
-  chargeExpendedLeniencyDelay: 0.01
+  chargeExpendedLeniencyDelay: 0.02
   dashRechargeInterval: 0
   jumpKey: 32
-  QBKey: 304
-  downDash: 306
+  QBKey: 323
+  downDash: 324
   playerHeight: 1.5
   whatIsGround:
     serializedVersion: 2
@@ -3369,7 +3369,7 @@ MonoBehaviour:
   dashFOVEffect: 10
   orientation: {fileID: 6667348167635368911}
   maxFovValue: 40
-  FOVEffectDelayTime: 0.1
+  FOVEffectDelayTime: 0.2
 --- !u!1 &3647970414750420137
 GameObject:
   m_ObjectHideFlags: 0
