@@ -7,26 +7,24 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private Vector3 position;
     [SerializeField] private Vector3 endPoint;
     [SerializeField] private float speed;
+    [SerializeField] private GameObject boundingTrigger;
     private float step;
-    public bool Direction;
+    public float Direction;
     [SerializeField] private GameObject platform;
     private GameObject player;
-    private Rigidbody playerRB;
-    [SerializeField] private float platformEffectTime;
-    private float platformEffect;
-    private bool platformExit;
     [SerializeField]private Rigidbody velocity;
 
     private void OnEnable()
     {
         platform.transform.position = startPoint;
-        Direction = true;
+        Direction = 1;
+        //boundingTrigger.SetActive(false);
     }
     private void Update()
     {
         step = Time.deltaTime / 2 * speed;
 
-        if (Direction)
+        if (Direction == 1)
         {
             position = Vector3.MoveTowards(position, endPoint, step);
         }
@@ -39,42 +37,26 @@ public class MovingPlatform : MonoBehaviour
 
         if (position == endPoint)
         {
-            Direction = false;
+            Direction = -1;
         }
         else if (position == startPoint)
         {
-            Direction = true;
+            Direction = 1;
         }
 
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        boundingTrigger.SetActive(true);
         if (collision.gameObject.GetComponent<BaseMovement>() != null)
         {
-            player = collision.gameObject;
-            playerRB = collision.gameObject.GetComponent<Rigidbody>();
-            platformEffect = platformEffectTime;
-            player.transform.parent = platform.transform;
+            boundingTrigger.SetActive(true);
         }
-        platformExit = false;
     }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        platformExit = true;
 
-        Invoke(nameof(Disembark), platformEffectTime);
-    }
 
-    private void Disembark()
-    {
-        if (platformExit)
-        {
-            platform.transform.DetachChildren();
-        }
-
-    }
 }
 
 
