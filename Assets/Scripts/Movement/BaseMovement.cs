@@ -28,10 +28,10 @@ public class BaseMovement : MonoBehaviour
     public float airmultiplier;
     public float dashCount;
     public float downDashBounceForce;
-    public KeyCode forwardKey = KeyCode.W;
-    public KeyCode leftKey = KeyCode.A;
-    public KeyCode backwardKey = KeyCode.S;
-    public KeyCode rightKey = KeyCode.D;// inputs stored for detecting direction dash is being performed in.
+    public KeyCode forwardKey = KeyCode.W;// inputs stored for detecting direction dash is being performed in.
+    public KeyCode leftKey = KeyCode.A;//same as above
+    public KeyCode backwardKey = KeyCode.S;//same as above
+    public KeyCode rightKey = KeyCode.D;//same as above.
     [HideInInspector] public float downDashBounce;
     [HideInInspector] public float dashDirection;
     [HideInInspector] public float dashCountStored;
@@ -362,15 +362,15 @@ public class BaseMovement : MonoBehaviour
     }
     public void DownDashKickDecay()//decays the downdash boost increase
     {
-        downDashPrepKick = 1;
+        downDashPrepKick = 1;//sets the boost kick value to 1, as to avoid it multplying dash force by 0, cancelling them. 
     }
     public void dashDurationEnd()// ends the dash duration
     {
-        amDashing = false;
+        amDashing = false;//used to communicate externally that the player is no longer dashing.
     }
     public void CoyoteTime()// ends the coyoteTIme grace period.
     {
-        canGroundJump = false;
+        canGroundJump = false;//ends the coyote time window and activates the state where jumping requires charges.
     }
     private void DashExpendLenience()
     {
