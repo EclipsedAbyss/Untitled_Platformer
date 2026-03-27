@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class ChargeRefillShard : MonoBehaviour
-{
+{//beginning of shard script
     private BaseMovement player;
     [SerializeField] private float strength;
     [SerializeField] private float chargeTime;
@@ -12,11 +12,14 @@ public class ChargeRefillShard : MonoBehaviour
     {
         if (charged)
         {
-            player = other.GetComponent<BaseMovement>();
-            player.dashCount += strength;
-            charged = false;
-            gameObject.GetComponent<MeshRenderer>().material = inactiveMaterial;
-            Invoke(nameof(Recharge), chargeTime);
+            if (other.GetComponent<BaseMovement>() != null)
+            {
+                player = other.GetComponent<BaseMovement>();
+                player.dashCount += strength;
+                charged = false;
+                gameObject.GetComponent<MeshRenderer>().material = inactiveMaterial;
+                Invoke(nameof(Recharge), chargeTime);
+            }
         }
     }
 
@@ -25,4 +28,4 @@ public class ChargeRefillShard : MonoBehaviour
         charged = true;
         gameObject.GetComponent<MeshRenderer>().material = activeMaterial;
     }
-}
+}//end of shard script

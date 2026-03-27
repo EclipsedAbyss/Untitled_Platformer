@@ -11,6 +11,9 @@ public class FaliureTrigger : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        getDeathHud.playerDie = true;//this marks the player as dead and pulls up the ui corresponding to that fact. if you are good enough at the game, this may never happen.
+        if (other.GetComponent<BaseMovement>() != null)
+        {
+            getDeathHud.playerDie = true;//this marks the player as dead and pulls up the ui corresponding to that fact. if you are good enough at the game, this may never happen.
+        }
     }
 }

@@ -11,7 +11,7 @@ public class HitStopEffects : MonoBehaviour
 
     private void Start()
     {
-        hitStopLight.SetActive(false);
+        hitStopLight.SetActive(false);//deactivates the hit stop light as it isonly needed in brief increments.
         HitStopLengthStored = hitStopLength;// saves the stored value
     }
     public void OnHitStopStart()//fired from the slam pad, runs the hitstop VFX.

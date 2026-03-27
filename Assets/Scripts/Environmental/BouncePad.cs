@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class BouncePad : MonoBehaviour
 {
-    private Rigidbody playerRB;
+    private Rigidbody objectRigidbody;
     public float bouncePadForce;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<BaseMovement>() != null)
+        if (other.GetComponent<Rigidbody>() != null)
         {
-            playerRB = other.GetComponent<Rigidbody>();
-            playerRB.linearVelocity = Vector3.zero;
-            playerRB.AddForce(this.transform.up * (bouncePadForce), ForceMode.Impulse);
-            playerRB = null;
+            objectRigidbody = other.GetComponent<Rigidbody>();
+            objectRigidbody.linearVelocity = Vector3.zero;
+            objectRigidbody.AddForce(this.transform.up * (bouncePadForce), ForceMode.Impulse);
+            objectRigidbody = null;
         }
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlatformTrigger : MonoBehaviour
+public class PlatformTrigger : MonoBehaviour//this controls the player movement effects of the moving platform.
 {
     [SerializeField] private GameObject platform;
     [SerializeField] private MovingPlatform platformInfo;
@@ -20,31 +20,19 @@ public class PlatformTrigger : MonoBehaviour
     {
         lastPosition = gameObject.transform.position;
     }
-    private void Update()
+    private void FixedUpdate()
     {
         currentPosition = gameObject.transform.position;
 
         platformOffsetX = (Mathf.Abs(lastPosition.x - currentPosition.x));
-        platformOffset.y = (Mathf.Abs(lastPosition.y - currentPosition.y));
+        platformOffsetY = (Mathf.Abs(lastPosition.y - currentPosition.y));
         platformOffsetZ = (Mathf.Abs(lastPosition.z - currentPosition.z));
         platformOffset  = new Vector3(platformOffsetX, platformOffsetY, platformOffsetZ);
         if (onPlatform &&  inCollider)
         {
-            player.transform.position = platform.transform.position + offset + (platformOffset * platformInfo.Direction) ;
+            player.transform.position = platform.transform.position + offset + (platformOffset) ;
         }
         lastPosition = currentPosition;
-
-        //if (!inCollider && onPlatform)
-        //{
-        //    timeToBoot += Time.deltaTime;
-        //    if (timeToBoot > 0.5)
-        //    {
-        //        platformInfo.Disembark();
-        //        onPlatform = false;
-        //        Debug.Log("bad connection");
-        //    }
-        //}
-
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -78,7 +66,7 @@ public class PlatformTrigger : MonoBehaviour
     private void LateUpdate()
     {
         inCollider = false;
-        
+
     }
     public void Disembark()
     {
@@ -87,8 +75,6 @@ public class PlatformTrigger : MonoBehaviour
             player.transform.parent = null;
             gameObject.SetActive(false);
         }
-      
-        //boundingTrigger.SetActive(false);
     }
 
 }

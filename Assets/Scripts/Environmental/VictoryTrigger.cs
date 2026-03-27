@@ -10,11 +10,15 @@ public class VictoryTrigger : MonoBehaviour
         getVictoryController = FindFirstObjectByType<VictoryScreenController>();
         LCT = FindFirstObjectByType<LevelCompletionTracker>();
         HUD = FindFirstObjectByType<HUDController>();
+
     }
     private void OnTriggerEnter(Collider other)
     {
-        HUD.HUDCanvas.SetActive(false);
-        getVictoryController.OnLevelEnd();
-        LCT.OnLevelCompletion();
+        if (other.GetComponent<BaseMovement>() != null)
+        {
+            HUD.HUDCanvas.SetActive(false);
+            getVictoryController.OnLevelEnd();
+            LCT.OnLevelCompletion();
+        }
     }
 }
