@@ -10853,6 +10853,22 @@ PrefabInstance:
       propertyPath: strength
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6941349633859275250, guid: ac18a3f2aa3bb3947a17e47a4572b48f, type: 3}
+      propertyPath: chargeTime
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6941349633859275250, guid: ac18a3f2aa3bb3947a17e47a4572b48f, type: 3}
+      propertyPath: activeMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 4cb1caae11e11b54da24aae18068ffc9, type: 2}
+    - target: {fileID: 6941349633859275250, guid: ac18a3f2aa3bb3947a17e47a4572b48f, type: 3}
+      propertyPath: inActiveMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 45968088d66438847bbb32f16db14dc2, type: 2}
+    - target: {fileID: 6941349633859275250, guid: ac18a3f2aa3bb3947a17e47a4572b48f, type: 3}
+      propertyPath: inactiveMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 45968088d66438847bbb32f16db14dc2, type: 2}
     - target: {fileID: 7061859198966652915, guid: ac18a3f2aa3bb3947a17e47a4572b48f, type: 3}
       propertyPath: m_Name
       value: Dash_Shard

@@ -130,6 +130,16 @@ public class BaseMovement : MonoBehaviour
         }
         speedLockTimer -= Time.deltaTime;
         downDashBounceTime -= Time.deltaTime;
+
+      
+    }
+
+    private void LateUpdate()
+    {
+        if (dashCount > dashCountStored)
+        {
+            dashCount -= 1;
+        }
     }
 
     private void FixedUpdate()
@@ -350,10 +360,6 @@ public class BaseMovement : MonoBehaviour
                 dashRechargeInterval = 0;
             }
 
-        }
-        else if (dashCount > dashCountStored)
-        {
-            dashCount -= 1;
         }
         else
         {
