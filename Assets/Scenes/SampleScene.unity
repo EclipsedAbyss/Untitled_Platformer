@@ -7087,6 +7087,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1160710180}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1173866620 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2768749733081377771, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+  m_PrefabInstance: {fileID: 2958622113837697512}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1182847011
 GameObject:
   m_ObjectHideFlags: 0
@@ -10727,6 +10732,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelTemplate
       objectReference: {fileID: 0}
+    - target: {fileID: 1157481351393076305, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: pauseUI
+      value: 
+      objectReference: {fileID: 1173866620}
     - target: {fileID: 6334150560662210941, guid: eebd45a6d787bf245ba487712899e772, type: 3}
       propertyPath: m_LocalPosition.x
       value: 256.42758
@@ -10778,6 +10787,26 @@ PrefabInstance:
     - target: {fileID: 7312682280357989334, guid: eebd45a6d787bf245ba487712899e772, type: 3}
       propertyPath: m_IsKinematic
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: QBDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: chargeCount
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: verticalDashCoolDown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: horizontalDashCoolDown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016669723899873027, guid: eebd45a6d787bf245ba487712899e772, type: 3}
+      propertyPath: horizontalDashForceMult
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

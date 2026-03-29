@@ -1,20 +1,19 @@
-using System.Data;
 using UnityEngine;
 
 public class Popups : MonoBehaviour//allows UI level popups to show up. meant for use in the tutorial only as a means to avid being disruptive.
-{
-    [SerializeField] private GameObject Popup;
+{//start of popup script
+    [SerializeField] private GameObject Popup;//the canvas used for this popup
     [SerializeField] private bool startOrEnd; //on is start, off is end.
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)//start of ontriggerenter
     {
-        if (startOrEnd)
+        if (startOrEnd)//chekcs which trigger this is
         {
-            Popup.SetActive(true);
+            Popup.SetActive(true);//if its start, activates the popup
         }
-        else
+        else//otherwise
         {
-            Popup.SetActive(false);
+            Popup.SetActive(false);//if its end, disable the popup
         }
-        Destroy(gameObject);
-    }
-}
+        Destroy(gameObject);//destroys the trigger after to avoid stacking popups or them flooding the screen.
+    }//end of ontriggeerenter
+}//end of popup script

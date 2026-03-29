@@ -20,4 +20,4 @@ public class Glass : MonoBehaviour//needed context. this script is on a trigger 
             }
         }
     }//end of trigger functions
-}
+}//end of the glass script

@@ -2,24 +2,24 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DeathHudController : MonoBehaviour
-{
-    [SerializeField] private GameObject gameOverScreen;
-    [HideInInspector] public bool playerDie;
-    private void Start()
+{//start of the death HUD controller script
+    [SerializeField] private GameObject gameOverScreen;//used to store the canvas that contains the death HUD
+    [HideInInspector] public bool playerDie;//used to inform the game that the player is dead
+    private void Start()//start of start
     {
-        gameOverScreen.SetActive(false);
-    }
-   private void Update()
+        gameOverScreen.SetActive(false);//disables the death hud, as the player shouldnt be dead at this point.
+    }//end of start
+   private void Update()//start of update
    {
-        if (playerDie)
+        if (playerDie)//checks if the player is dead
         {
-            Time.timeScale = 0;
-            gameOverScreen.SetActive(true);
-            if (Input.anyKeyDown)
+            Time.timeScale = 0;//stops time
+            gameOverScreen.SetActive(true);//enables the death screen
+            if (Input.anyKeyDown)//detects any button presses to restart
             {
-                Time.timeScale = 1;
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                Time.timeScale = 1;//resumes time
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);//reloads the active scene.
             }
         }
-   }
-}
+   }//end of update
+}// end of the death HUD controller

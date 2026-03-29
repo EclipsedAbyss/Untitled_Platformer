@@ -1,11 +1,8 @@
-using System;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class BaseMovement : MonoBehaviour
-{
+using UnityEngine;
+
+public class BaseMovement : MonoBehaviour//for context, qb means quickboost. its used to refer to both vertical and horizontal dashes whenr eferred to as one group.
+{//start of base movement scripts
 
     [Header("movement")]//these are all for basic movement (walking around on the floor)bhn
     public float moveSpeed;
@@ -24,9 +21,9 @@ public class BaseMovement : MonoBehaviour
     [Header("QuickBoost")] // all of these fields are for the multi-directional dash (includes jumping and downdashing) this was an absolute headache to get working initially.
     Rigidbody rb;
     public float QBForce;
-    public float QBForceMult;
+    public float horizontalDashForceMult;
     public float airmultiplier;
-    public float dashCount;
+    public float chargeCount;
     public float downDashBounceForce;
     public KeyCode forwardKey = KeyCode.W;// inputs stored for detecting direction dash is being performed in.
     public KeyCode leftKey = KeyCode.A;//same as above
@@ -37,7 +34,7 @@ public class BaseMovement : MonoBehaviour
     [HideInInspector] public float dashCountStored;
     [HideInInspector] public float lastQB; // 0 is none, 1 is forward, 2 is back, 3 is left, 4 is right. the numbers are inconsequental aside from allowing a cooldown bypass by chainboosting(this is intended). 
     [HideInInspector] public float cachedQB; //used to cache another prior Qb, as a means to avoid issues caused by 2 buttons being held at once. as a consquence, chaining is now slightly harder to pull off.
-    [HideInInspector] private bool canVDash;// allows cancelling a circumstance where the player holds space and ctrl simoultaniously draining all of their charges.
+    [HideInInspector] private bool canVerticalDash;// allows cancelling a circumstance where the player holds space and ctrl simoultaniously draining all of their charges.
     [HideInInspector] public float downDashPrepKick;//used to store the bonus force for the boost
     [SerializeField] private float groundedBonusForce;//used to set the bonus force gained from a grounded downdash
     private bool canGroundJump;
@@ -45,16 +42,16 @@ public class BaseMovement : MonoBehaviour
 
 
     [Header("QuickBoost Delay Values")]// these were split off the prior header for legibilities sake. these are all in relation to cooldowns and delays.
-    public float QBCoolDown;
+    public float horizontalDashCoolDown;
     public float QBRecharge;
     public float QBRechargeDelayChecker;
-    public float verticalCoolDown;
+    public float verticalDashCoolDown;
     public float QBMemoryTime;
     public float dashAccumulationThreshhold;
     public float coyoteTimer;
     public bool amDashing;
     public float downDashBounceTime;
-    [SerializeField] private float dashDuration;
+    [SerializeField] private float QBDuration;
     [SerializeField] private float speedLockTimer;
     [SerializeField] private float boostChainFallOff;
     [SerializeField] private float downDashKickDecayTime;
@@ -84,12 +81,12 @@ public class BaseMovement : MonoBehaviour
     private void Start()
     {
         rb = this.GetComponent<Rigidbody>();// gets the players rigidbody.
-        dashCountStored = dashCount;//stores the total amount of dashes manually set.
+        dashCountStored = chargeCount;//stores the total amount of dashes manually set.
         speedLockTimerStored = speedLockTimer;// preserves information of the manually stated timer.
         downDashBounceTimeStored = downDashBounceTime;//same as above
         downDashBounceTime = 0;// clears the timer to avoid it firing prematurely
         speedLockTimer = 0;//same as above
-        canVDash = true;
+        canVerticalDash = true;
         overSpeedThreshhold = moveSpeed + 1;
         canCoyoteTime = true;
 
@@ -136,9 +133,9 @@ public class BaseMovement : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (dashCount > dashCountStored)
+        if (chargeCount > dashCountStored)
         {
-            dashCount -= 1;
+            chargeCount -= 1;
         }
     }
 
@@ -150,37 +147,37 @@ public class BaseMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKeyDown(jumpKey) && canGroundJump && canVDash)// allows grunded jumps (does not consume a charge)
+        if (Input.GetKeyDown(jumpKey) && canGroundJump && canVerticalDash)// allows grunded jumps (does not consume a charge)
         {
             Jump();
             Debug.Log("Jump");
         }
-        else if (Input.GetKeyDown(jumpKey) && dashCount > 0 && !canGroundJump && canVDash)// allows for midair jumping (up dash)
+        else if (Input.GetKeyDown(jumpKey) && chargeCount > 0 && !canGroundJump && canVerticalDash)// allows for midair jumping (up dash)
         {
             Jump();
             amDashing = true;
-            dashCount -= 1;
+            chargeCount -= 1;
             Debug.Log("UpBoost");
         }
       
 
-        if (Input.GetKeyDown(downDash) && dashCount > 0 && !onGround && canVDash)// allows to down dash
+        if (Input.GetKeyDown(downDash) && chargeCount > 0 && !onGround && canVerticalDash)// allows to down dash
         {
             DashDown();
         }
-        else if (Input.GetKeyDown(downDash) && dashCount > 0 && onGround && canVDash)//allows to down dash immediately into a horizontal dash while grounded for a larger result, at the cost of an extra charge.
+        else if (Input.GetKeyDown(downDash) && chargeCount > 0 && onGround && canVerticalDash)//allows to down dash immediately into a horizontal dash while grounded for a larger result, at the cost of an extra charge.
         {
-            canVDash = false;
-            dashCount -= 1;
+            canVerticalDash = false;
+            chargeCount -= 1;
             downDashPrepKick = groundedBonusForce;
-            Invoke(nameof(VerticalDashMemory), verticalCoolDown);
+            Invoke(nameof(VerticalDashMemory), verticalDashCoolDown);
             Invoke(nameof(DownDashKickDecay), downDashKickDecayTime);
             Debug.Log("Prepped");
         }
 
         if(Input.GetKeyDown(QBKey))// registers when the player quickboosts
         {
-            if (dashCount > 0 && Input.GetKey(backwardKey))// placed at the top for highest priority, gets the player holding back and dashes in that direction
+            if (chargeCount > 0 && Input.GetKey(backwardKey))// placed at the top for highest priority, gets the player holding back and dashes in that direction
             {
                 if (lastQB != 2 && cachedQB != 2)
                 {
@@ -189,7 +186,7 @@ public class BaseMovement : MonoBehaviour
                 }
 
             }
-            else if (dashCount > 0 && Input.GetKey(leftKey))//these 2 (left and right) were essentially a coin toss in priority since realistically noone should try to do both at once
+            else if (chargeCount > 0 && Input.GetKey(leftKey))//these 2 (left and right) were essentially a coin toss in priority since realistically noone should try to do both at once
             {
                 if (lastQB != 3 && cachedQB != 3)
                 {
@@ -197,7 +194,7 @@ public class BaseMovement : MonoBehaviour
                     SideDash();
                 }
             }
-            else if (dashCount > 0 && Input.GetKey(rightKey))
+            else if (chargeCount > 0 && Input.GetKey(rightKey))
             {
                 if (lastQB != 4 && cachedQB != 4)
                 {
@@ -206,7 +203,7 @@ public class BaseMovement : MonoBehaviour
                 }
 
             }
-            else if (dashCount > 0)// if the player is going forward or is simply still, the default is a forward dash. lowest priority to assist in control useability
+            else if (chargeCount > 0)// if the player is going forward or is simply still, the default is a forward dash. lowest priority to assist in control useability
             {
                 if (lastQB != 1)
                 {
@@ -221,35 +218,35 @@ public class BaseMovement : MonoBehaviour
     {
         rb.AddForce((transform.up * -1) * QBForce / 2, ForceMode.Impulse);// applies a downward force to the player
         downDashBounceTime = downDashBounceTimeStored;//allows a higher jump after dashing into the ground from midair. was originally done automatically but turned out EXTREMELY annoying in practice.
-        dashCount -= 1;
+        chargeCount -= 1;
         cachedQB = lastQB;
         lastQB = 6;
-        canVDash = false;// prevents theplayer from holding ctrl and space simoultaniously, draining all their charge instantly
+        canVerticalDash = false;// prevents theplayer from holding ctrl and space simoultaniously, draining all their charge instantly
         amDashing = true;//used for camera calculations and slam pads.
-        Invoke(nameof(VerticalDashMemory), verticalCoolDown /2);
-        Invoke(nameof(dashDurationEnd), dashDuration);
+        Invoke(nameof(VerticalDashMemory), verticalDashCoolDown /2);
+        Invoke(nameof(QBDurationEnd), QBDuration);
         Debug.Log("DownBoost");
     }
 
     private void SideDash()//code to induce the sideways dash
     {
-       rb.AddForce((transform.right * dashDirection) * (QBForce * QBForceMult * downDashPrepKick), ForceMode.Impulse);
-        dashCount -= 1;
+       rb.AddForce((transform.right * dashDirection) * (QBForce * horizontalDashForceMult * downDashPrepKick), ForceMode.Impulse);
+        chargeCount -= 1;
         CacheChecker();
         if (dashDirection == -1)
             lastQB = 3;
         else if (dashDirection == 1)
             lastQB = 4;
         amDashing = true;
-        Invoke(nameof(QBMemory), QBCoolDown);
-        Invoke(nameof(dashDurationEnd), dashDuration);
+        Invoke(nameof(HorizontalDashMemory), horizontalDashCoolDown);
+        Invoke(nameof(QBDurationEnd), QBDuration);
         Debug.Log("sideboost");
     }
 
     private void ForwardDash()// code to induce the forward/backward dash
     {
-        rb.AddForce((transform.forward * dashDirection) * (QBForce * QBForceMult * downDashPrepKick), ForceMode.Impulse);
-        dashCount -= 1;
+        rb.AddForce((transform.forward * dashDirection) * (QBForce * horizontalDashForceMult * downDashPrepKick), ForceMode.Impulse);
+        chargeCount -= 1;
         CacheChecker();
         lastQB = 2;
         if (dashDirection == -1)
@@ -257,8 +254,8 @@ public class BaseMovement : MonoBehaviour
         else if (dashDirection == 1)
             lastQB = 1;
         amDashing = true;
-        Invoke(nameof(QBMemory), QBCoolDown);
-        Invoke(nameof(dashDurationEnd), dashDuration);
+        Invoke(nameof(HorizontalDashMemory), horizontalDashCoolDown);
+        Invoke(nameof(QBDurationEnd), QBDuration);
         Debug.Log("forward boost");
     }
 
@@ -270,14 +267,14 @@ public class BaseMovement : MonoBehaviour
         {
             rb.AddForce(10 * moveSpeed * MovementDirection.normalized, ForceMode.Acceleration);
 
-            if (QBRechargeDelayChecker < dashCount)
+            if (QBRechargeDelayChecker < chargeCount)
             {
                 Invoke(nameof(ResetQB), QBRecharge);
-                QBRechargeDelayChecker = dashCount;
+                QBRechargeDelayChecker = chargeCount;
             }
-            else if (QBRechargeDelayChecker > dashCount)
+            else if (QBRechargeDelayChecker > chargeCount)
             {
-                QBRechargeDelayChecker = dashCount;
+                QBRechargeDelayChecker = chargeCount;
             }
         }
         else 
@@ -310,7 +307,7 @@ public class BaseMovement : MonoBehaviour
         if (speedLockTimer > 0)
         {
             rb.AddForce(transform.up * (QBForce / boostChainFallOff), ForceMode.Impulse);
-            canVDash = false;//this is used for cooldowns of both the jump and the down dash.
+            canVerticalDash = false;//this is used for cooldowns of both the jump and the down dash.
         }
         else if (downDashBounceTime > 0 && onGround == true)
         {
@@ -320,29 +317,29 @@ public class BaseMovement : MonoBehaviour
         else
         {
             rb.AddForce(transform.up * QBForce, ForceMode.Impulse);
-            canVDash = false;
+            canVerticalDash = false;
         }
 
         lastQB = 5;
         speedLockTimer = speedLockTimerStored;
-        Invoke(nameof(VerticalDashMemory), verticalCoolDown);
-        Invoke(nameof(dashDurationEnd), dashDuration);
+        Invoke(nameof(VerticalDashMemory), verticalDashCoolDown);
+        Invoke(nameof(QBDurationEnd), QBDuration);
 
 
     }
-    public void QBMemory()// remembers the last quickboost performed to allow chainboosting. chainboosting is an idea taken from an animation cancel exploit found in armoured core for answer.
+    public void HorizontalDashMemory()// remembers the last quickboost performed to allow chainboosting. chainboosting is an idea taken from an animation cancel exploit found in armoured core for answer.
     {
         cachedQB = 0;
         lastQB = 0;
     }
     public void VerticalDashMemory()//allows to do the same as above but for dashing up and down
     {
-        canVDash = true;
+        canVerticalDash = true;
     }
 
     public void ResetQB()// slowly increases stored charges.
     {
-        if (dashCount != dashCountStored)//prevents it from trying to recharge when charges are full
+        if (chargeCount != dashCountStored)//prevents it from trying to recharge when charges are full
         {
 
             if (onGround)
@@ -355,7 +352,7 @@ public class BaseMovement : MonoBehaviour
             }
             if (dashRechargeInterval > dashAccumulationThreshhold)// this is used as opposed to a raw time.deltatime to allow charges to take more time to fill.
             {
-                dashCount += 1;
+                chargeCount += 1;
 
                 dashRechargeInterval = 0;
             }
@@ -370,7 +367,7 @@ public class BaseMovement : MonoBehaviour
     {
         downDashPrepKick = 1;//sets the boost kick value to 1, as to avoid it multplying dash force by 0, cancelling them. 
     }
-    public void dashDurationEnd()// ends the dash duration
+    public void QBDurationEnd()// ends the dash duration
     {
         amDashing = false;//used to communicate externally that the player is no longer dashing.
     }
@@ -380,11 +377,11 @@ public class BaseMovement : MonoBehaviour
     }
     private void DashExpendLenience()
     {
-        if (dashCount - 1 > 1)
+        if (chargeCount - 1 > 1)
         {
-            if (dashCountLenienceStored -1 > (dashCount))
+            if (dashCountLenienceStored -1 > (chargeCount))
             {
-                dashCount += 1;
+                chargeCount += 1;
             }
         }
         if (lenienceStackBlock)
@@ -396,7 +393,7 @@ public class BaseMovement : MonoBehaviour
     }
     public void DashExpendLenienceFire()
     {
-        dashCountLenienceStored = dashCount;
+        dashCountLenienceStored = chargeCount;
         lenienceStackBlock = true;
     }
     private void CacheChecker()

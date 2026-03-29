@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class PlayerRespawn : MonoBehaviour
-{
+{//start of player respawn script
     //this just prevents the player from falling infinitely in the worst case scenario of them cipping out of bounds
     private BaseMovement playerMovement;//gets theplayers movement in order to get the object
     private GameObject player;//the actual player
@@ -21,4 +21,4 @@ public class PlayerRespawn : MonoBehaviour
             player.transform.position = respawnPosition;//sets the player to the predefined respawn position.
         }
     }//end of lateupdate
-}
+}//end of player respawn script

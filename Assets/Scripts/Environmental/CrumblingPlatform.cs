@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class CrumblingPlatform : MonoBehaviour
-{//start of script
+{//start of crumbling platform script
     [SerializeField] GameObject platform;//stores the platform itself
     [SerializeField] float timeToCollapse;//the manually set time the platform lasts after contact
     [SerializeField] float timeToRegenerate;//the manually set time for the platform to come back
@@ -34,4 +34,4 @@ public class CrumblingPlatform : MonoBehaviour
         Destroy(remains);//destroys the remains object
         collapsed = false;//marks collapsed as false
     }//end of platform reset function
-}//end of script
+}//end of crumbling platform script

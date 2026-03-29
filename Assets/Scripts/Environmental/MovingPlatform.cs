@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour//this is used for the movement of the platform, and has no relation to the actual effects it has on the player;
-{
+{//start of moving platform script
     [SerializeField] private Vector3 startPoint;//stores the platforms starting position
     [SerializeField] private Vector3 position;//stores the platforms current position
     [SerializeField] private Vector3 endPoint;//stores the platforms ending position
@@ -11,11 +11,11 @@ public class MovingPlatform : MonoBehaviour//this is used for the movement of th
     public float Direction;//tells the platform if its going to the end point or the start point (1 is to end, -1 is to start)
     [SerializeField] private GameObject platform;//stores the platform as a gameobject
 
-    private void OnEnable()
+    private void OnEnable()//start of onenable
     {
         platform.transform.position = startPoint;//makes sure the platform is on its starting position
         Direction = 1;//sets the platform to move towards 
-    }
+    }//end of on enable
     private void FixedUpdate()//fixedupdate is used to avoid the platform movement being framerate dependant
     {
         step = Time.deltaTime / 2 * speed;//sets step to deltatime for smooth movement and multiplies it by the manually set speed value
@@ -40,7 +40,7 @@ public class MovingPlatform : MonoBehaviour//this is used for the movement of th
             Direction = 1;//sets the movement back to normal
         }
 
-    }
+    }//end of fixed update
 
     private void OnCollisionEnter(Collision collision)//start of the collision entry function
     {
@@ -52,7 +52,7 @@ public class MovingPlatform : MonoBehaviour//this is used for the movement of th
 
 
 
-}
+}//end of moving platform script
 
 
 
