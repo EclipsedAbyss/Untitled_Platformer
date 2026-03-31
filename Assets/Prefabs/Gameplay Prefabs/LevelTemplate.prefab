@@ -2968,7 +2968,7 @@ MonoBehaviour:
   backwardKey: 115
   rightKey: 100
   dashDirection: 0
-  dashCountStored: 0
+  chargeCountStored: 0
   lastQB: 0
   cachedQB: 0
   downDashPrepKick: 10
@@ -6536,7 +6536,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 861710565729688902}
-  - component: {fileID: 1661292833024370262}
+  - component: {fileID: 2577963012019852527}
   m_Layer: 0
   m_Name: DeathController
   m_TagString: Untagged
@@ -6559,7 +6559,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6334150560662210941}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1661292833024370262
+--- !u!114 &2577963012019852527
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6568,7 +6568,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8941973563390878105}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfff2cbb328c48f4d8b04918706ba542, type: 3}
+  m_Script: {fileID: 11500000, guid: 644a01018c815df4791696d272a5741a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverScreen: {fileID: 2486441892512104946}

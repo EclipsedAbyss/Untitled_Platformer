@@ -5,14 +5,14 @@ public class PauseMenuController : MonoBehaviour
 {//start of the pause menu controller script
     private bool paused;//bool to allow the pause menu to toggle
     public bool resumePress;//bool to register when resume is pressed
-    private DeathHudController playerDeathTracker;//used to avoid pausing on the death screen
+    private DeathUIController playerDeathTracker;//used to avoid pausing on the death screen
     private VictoryScreenController playerVictoryTracker;//used to track if the player has ended the level or not
     [SerializeField] GameObject pauseUI;//used to store the HUD for the pause menu
 
 
     private void Start()//start of start
     {
-        playerDeathTracker = FindFirstObjectByType<DeathHudController>();//finds the death hud controller so it can figure out if the player is dead or not
+        playerDeathTracker = FindFirstObjectByType<DeathUIController>();//finds the death hud controller so it can figure out if the player is dead or not
         playerVictoryTracker = FindFirstObjectByType<VictoryScreenController>();//finds the victory hud controller so the game can verify if the level has ended or not
     }//end of start
     private void Update()//start of update

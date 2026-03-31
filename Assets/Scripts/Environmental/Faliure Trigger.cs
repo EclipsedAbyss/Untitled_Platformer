@@ -2,16 +2,22 @@ using UnityEngine;
 
 public class FaliureTrigger : MonoBehaviour
 {//start of faliure trigger script
-    private DeathHudController getDeathHud;
+    private DeathUIController getDeathUI;//the death screen UI
+    [SerializeField] private Vector3 relocatePosition;
     private void Start()//start of start
     {
-        getDeathHud = FindFirstObjectByType<DeathHudController>();//gets the death hud. due to the level components needing to be able to be dropped in willy nilly, the field is not set before runtime to make the process easier.
+        getDeathUI = FindFirstObjectByType<DeathUIController>();//gets the death hud. due to the level components needing to be able to be dropped in willy nilly, the field is not set before runtime to make the process easier.
     }//end of start
     private void OnTriggerEnter(Collider other)//start of ontriggerenter
     {
         if (other.GetComponent<BaseMovement>() != null)//checks if the colliding object is the player
         {
-            getDeathHud.playerDie = true;//if it is, "kills" the player and pulls up the corresponding UI.
+            getDeathUI.playerDie = true;//if it is, "kills" the player and pulls up the corresponding UI.
         }
+        else if (other.GetComponent<Rigidbody>() && !other.GetComponent<BaseMovement>())//checks if the colliding object is a non player rigidbody
+        {
+            other.transform.position = relocatePosition;//teleports it elsewhere
+        }
+        other = null;
     }//end of ontriggerenter
 }//end of faliure trigger script

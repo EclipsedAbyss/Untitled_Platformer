@@ -122,6 +122,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platform: {fileID: 8451504032505340480}
-  timeToCollapse: 5
+  timeToCollapse: 1
   timeToRegenerate: 10
   remainsMat: {fileID: 2100000, guid: 45968088d66438847bbb32f16db14dc2, type: 2}

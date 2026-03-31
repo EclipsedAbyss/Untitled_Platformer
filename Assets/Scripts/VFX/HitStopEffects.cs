@@ -4,7 +4,7 @@ public class HitStopEffects : MonoBehaviour
 {//start of hitstop effect script
     [SerializeField] private GameObject hitStopLight;//used to store the screen effect
     [SerializeField] private AudioClip hitStopSFXAudio;//used to store the audio clip for the sfx
-    [SerializeField] private AudioSource hitStopSFX;//used to store the audio source for the sfx
+    //[SerializeField] private AudioSource hitStopSFX;//used to store the audio source for the sfx
     [SerializeField] private float hitStopLength;//used to manually set the length of the hitstop
     private float HitStopLengthStored;//used to store the manually set length so it can be reset
     public bool hitStop;//used to tell update if a hitstp has occured
@@ -37,6 +37,6 @@ public class HitStopEffects : MonoBehaviour
         hitStop = false;//tells the script there is no longer a hitstop
         hitStopLight.SetActive(false);//disables the screen efffect
         Time.timeScale = 1;//resumes time
-        hitStopSFX.PlayOneShot(hitStopSFXAudio, 0.7f);//plays the hitstop sfx
+        //hitStopSFX.PlayOneShot(hitStopSFXAudio, 0.7f);//plays the hitstop sfx
     }//end of hitstopend
 }//end of hitstop effect script

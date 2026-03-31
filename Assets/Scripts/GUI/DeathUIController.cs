@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DeathHudController : MonoBehaviour
+public class DeathUIController : MonoBehaviour
 {//start of the death HUD controller script
     [SerializeField] private GameObject gameOverScreen;//used to store the canvas that contains the death HUD
     [HideInInspector] public bool playerDie;//used to inform the game that the player is dead

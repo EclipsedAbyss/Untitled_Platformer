@@ -121,4 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 336909f9955d54f4aa6c0eb2e18fe323, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  strength: 0
+  strength: 1
+  chargeTime: 2
+  activeMaterial: {fileID: 2100000, guid: 4cb1caae11e11b54da24aae18068ffc9, type: 2}
+  inactiveMaterial: {fileID: 2100000, guid: 45968088d66438847bbb32f16db14dc2, type: 2}
