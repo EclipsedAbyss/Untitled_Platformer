@@ -1,411 +1,358 @@
-
 using UnityEngine;
 
-public class BaseMovement : MonoBehaviour//for context, qb means quickboost. its used to refer to both vertical and horizontal dashes whenr eferred to as one group.
-{//start of base movement scripts
+public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its used to refer to both vertical and horizontal dashes in instances where both are affected by one field
+{//start of the base movement script
 
     [Header("movement")]//these are all for basic movement (walking around on the floor)bhn
-    public float moveSpeed;
-    public float overSpeed;
-    public Transform orientation;
-    float horizontalInput;
-    float verticalInput;
-    private float overSpeedThreshhold;
-    [HideInInspector] public float grounded;
-    Vector3 MovementDirection;
-    public float groundDrag;
-    public float iceDrag;
-
+    public float moveSpeed;//manually set value for the default player speed
+    public float overSpeed;//manually se tvalue for the post-dash player speed
+    public Transform orientation;//the players orientation
+    float horizontalInput;//the horizontal input axis(a and d prefferably)
+    float verticalInput;//the vertical input axis (w and s prefferably)
+    private float overSpeedThreshhold;//the velocity required to exit the normal movement speed and go into the increased state
+    Vector3 MovementDirection;//the direction the player is moving in
+    public float groundDrag;//the drag the player recieves whie grounded
+    public float iceDrag;//the drag the player recieves on ice
 
 
     [Header("QuickBoost")] // all of these fields are for the multi-directional dash (includes jumping and downdashing) this was an absolute headache to get working initially.
-    Rigidbody rb;
-    public float QBForce;
-    public float horizontalDashForceMult;
-    public float airmultiplier;
-    public float chargeCount;
-    public float downDashBounceForce;
+    Rigidbody rb;//the players rigidbody
+    public float QBForce;//the force the player can QB with
+    public float horizontalDashForceMult;//the multiplier added to the force of horizontal dashes
+    public float airmultiplier;//the multiplier of player movement applied while midair. 
+    public float chargeCount;//the amount of charges the player is holding
+    public float downDashBounceForce;//the force applied when the player jumps after dashing into the ground
     public KeyCode forwardKey = KeyCode.W;// inputs stored for detecting direction dash is being performed in.
     public KeyCode leftKey = KeyCode.A;//same as above
     public KeyCode backwardKey = KeyCode.S;//same as above
     public KeyCode rightKey = KeyCode.D;//same as above.
-    [HideInInspector] public float downDashBounce;
-    [HideInInspector] public float dashDirection;
-    [HideInInspector] public float dashCountStored;
+    [HideInInspector] public float dashDirection;//the direction the player is dashing (swapped between -1 and 1 to allow simpler code for directions)
+    [HideInInspector] public float chargeCountStored;//the stored amount of dashes the player can hold. used to cap amount
     [HideInInspector] public float lastQB; // 0 is none, 1 is forward, 2 is back, 3 is left, 4 is right. the numbers are inconsequental aside from allowing a cooldown bypass by chainboosting(this is intended). 
     [HideInInspector] public float cachedQB; //used to cache another prior Qb, as a means to avoid issues caused by 2 buttons being held at once. as a consquence, chaining is now slightly harder to pull off.
     [HideInInspector] private bool canVerticalDash;// allows cancelling a circumstance where the player holds space and ctrl simoultaniously draining all of their charges.
     [HideInInspector] public float downDashPrepKick;//used to store the bonus force for the boost
     [SerializeField] private float groundedBonusForce;//used to set the bonus force gained from a grounded downdash
-    private bool canGroundJump;
-    private float dashCountLenienceStored;
+    private bool canGroundJump;//used to register when jumping will not consume a charge
 
 
     [Header("QuickBoost Delay Values")]// these were split off the prior header for legibilities sake. these are all in relation to cooldowns and delays.
-    public float horizontalDashCoolDown;
-    public float QBRecharge;
-    public float QBRechargeDelayChecker;
-    public float verticalDashCoolDown;
-    public float QBMemoryTime;
-    public float dashAccumulationThreshhold;
-    public float coyoteTimer;
-    public bool amDashing;
-    public float downDashBounceTime;
-    [SerializeField] private float QBDuration;
-    [SerializeField] private float speedLockTimer;
-    [SerializeField] private float boostChainFallOff;
-    [SerializeField] private float downDashKickDecayTime;
+    public float horizontalDashCoolDown;//the cooldown for horizontal dashes
+    public float QBRecharge;//the time for a charge to refill
+    public float verticalDashCoolDown;//the cooldown for the vertical dash
+    public float QBMemoryTime;//the time that a QB will be stored in memory
+    public float chargeAccumulationThreshhold;//the value charge recharge interval must reach before a charge is refilled
+    public float coyoteTimer;//the length of the coyotetime for jumping
+    public bool amDashing;//this is used to tell things collided with that the player is dashing
+    public float downDashBounceTime;//the window of time where the player can jump out of the state entered when dashing into the ground
+    [SerializeField] private float QBDuration;//time until the player is no longer marked as dashing
+    [SerializeField] private float speedLockTimer;//used to avoid the player jumping far too high out of a dash
+    [SerializeField] private float boostChainFallOff;//the
+    [SerializeField] private float downDashKickDecayTime;//used to decay the extra force a down dash gives a normal dash
     [SerializeField] private float chargeRechargeGroundedBonus;//names a bit messy, couldnt figure out a good name. this is just how much the recharge delay gets multiplied while grounded
-    [SerializeField] private float chargeExpendedLeniencyDelay;
-    [HideInInspector] public float dashRechargeInterval;
-    private float speedLockTimerStored;
-    private float downDashBounceTimeStored;
-    private bool lenienceStackBlock;
-
-
-
-
+    [HideInInspector] public float chargeRechargeInterval;//runs a time.deltatime to slowly increment up. once it hits a certain threshhold it gets reset and fills a dash
+    private float speedLockTimerStored;//the stored value of the timer that avoids ridiculous jumping out of dashes
+    private float downDashBounceTimeStored;//the stored value of the down dash bounce timer. used to reset it
 
     [Header("keybinds")]// actual input bindings. the priorly listed wasd are not really inputs but more just detection.
-    public KeyCode jumpKey = KeyCode.Space;
-    public KeyCode QBKey = KeyCode.Mouse1;
-    public KeyCode downDash = KeyCode.LeftControl;
+    public KeyCode jumpKey = KeyCode.Space;//gets the spacebar for jumping
+    public KeyCode QBKey = KeyCode.Mouse1;//gets leftmouse for dashing
+    public KeyCode downDash = KeyCode.Mouse2;//gets rightmouse for down dashing
 
     [Header("Ground Check")]// checks for the player being on the ground.
-    public float playerHeight;
-    public LayerMask whatIsGround;
-    public LayerMask whatIsIce;
-    bool onGround;
-    private bool canCoyoteTime;
+    public float playerHeight;//stores the height of the player
+    public LayerMask whatIsGround;//stores the layermask for ground
+    public LayerMask whatIsIce;//stores the layermask for ice
+    bool onGround;//confirms that the player is grounded. 
+    private bool canCoyoteTime;//used to store the coyotetime state
 
-    private void Start()
+    private void Start()//start of start
     {
         rb = this.GetComponent<Rigidbody>();// gets the players rigidbody.
-        dashCountStored = chargeCount;//stores the total amount of dashes manually set.
+        chargeCountStored = chargeCount;//stores the total amount of dashes manually set.
         speedLockTimerStored = speedLockTimer;// preserves information of the manually stated timer.
         downDashBounceTimeStored = downDashBounceTime;//same as above
         downDashBounceTime = 0;// clears the timer to avoid it firing prematurely
         speedLockTimer = 0;//same as above
-        canVerticalDash = true;
-        overSpeedThreshhold = moveSpeed + 1;
-        canCoyoteTime = true;
+        canVerticalDash = true;//makes certain that the player can vertical dash immediately
+        overSpeedThreshhold = moveSpeed + 1;//sets the move speed threshhold to its intended value
+        canCoyoteTime = true;//informs that the player can enter coyotetime
 
-    }
+    }//end of start
 
-    private void Update()
+    private void Update()//start of update
     {
 
         InputRegister();// used to detect inputs
         SpeedControl();// used for drag on ground
         ResetQB();// used to recharge the players useable charge count.
-        DashExpendLenience();//used to prevent dashes taking more charges then they should. hopefully.
+       
 
 
         bool grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);// this allows the player to know what ground is
         bool sliding = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsIce);//allows the player to have different movement on ice.
-        if (grounded)
+        if (grounded)//checks if the player is in the grounded state
         {
-            rb.linearDamping = groundDrag;
-            onGround = true;
-            canGroundJump = true;
-            canCoyoteTime = true;
+            rb.linearDamping = groundDrag;//if it is, apply ground drag to player movement
+            onGround = true;//set on ground to true
+            canGroundJump = true;//mark the player as able to jump without consuming a charge
+            canCoyoteTime = true;//and able to enter coyote time.
         }
-        else if(sliding)
+        else if(sliding)//if the player is on ice
         {
-            rb.linearDamping = iceDrag;
-            onGround = true;
-            canGroundJump = true;
-            canCoyoteTime = true;
+            rb.linearDamping = iceDrag;//apply the ice drag to player movement
+            onGround = true;//set on ground to true
+            canGroundJump = true;//mark the player as able to jump without consuming a charge
+            canCoyoteTime = true;//and able to enter coyote time
         }
-        else if (canCoyoteTime)
+        else if (canCoyoteTime)//if the player is not on the ground but can enter coyote time
         {
-            Invoke(nameof(CoyoteTime), coyoteTimer);
-            onGround = false;
-            rb.linearDamping = 0;
-            canCoyoteTime = false;
-
+            Invoke(nameof(CoyoteTime), coyoteTimer);//count the coyote time period down
+            onGround = false;//mark on ground as false
+            rb.linearDamping = 0;//remove drag from player movement
+            canCoyoteTime = false;//mark the player as no longer being able to enter oyote time as they are already in it
         }
-        speedLockTimer -= Time.deltaTime;
-        downDashBounceTime -= Time.deltaTime;
+        else//if the player is not on the ground
+        {
+            onGround = false;//mark on ground as false
+            rb.linearDamping = 0;//remove drag from player movement
+        }
+            speedLockTimer -= Time.deltaTime;//constantly decrement the speed lock timer
+        downDashBounceTime -= Time.deltaTime;//constantly decrement down dash bounce timer
 
       
-    }
+    }//end of update
 
-    private void LateUpdate()
+    private void LateUpdate()//start of lateupdate
     {
-        if (chargeCount > dashCountStored)
+        if (chargeCount > chargeCountStored)//checks if the player is holding more then the maximum amount of charges
         {
-            chargeCount -= 1;
+            chargeCount = chargeCountStored;//if they are, change the amount to max
         }
-    }
+    }//end of lateupdate
 
-    private void FixedUpdate()
+    private void FixedUpdate()//start of fixedupdate
     {
         MoveDirection();    //allows movement and prevents movement from being sped up based on framerate.
-    }
-    private void InputRegister()
+    }//end of fixedupdate
+    private void InputRegister()//start of the input register function. this is used for registering the players inputs
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        horizontalInput = Input.GetAxisRaw("Horizontal");//gets the key inputs for left and right
+        verticalInput = Input.GetAxisRaw("Vertical");//gets thekey inputs for forward and backward
         if (Input.GetKeyDown(jumpKey) && canGroundJump && canVerticalDash)// allows grunded jumps (does not consume a charge)
         {
-            Jump();
-            Debug.Log("Jump");
+            Jump();//fires the jump function
         }
         else if (Input.GetKeyDown(jumpKey) && chargeCount > 0 && !canGroundJump && canVerticalDash)// allows for midair jumping (up dash)
         {
-            Jump();
-            amDashing = true;
-            chargeCount -= 1;
-            Debug.Log("UpBoost");
+            Jump();//fires the jump function
+            amDashing = true;//marks the player as dashing
+            chargeCount -= 1;//reduces the charges held by 1
         }
       
-
         if (Input.GetKeyDown(downDash) && chargeCount > 0 && !onGround && canVerticalDash)// allows to down dash
         {
-            DashDown();
+            DashDown();//fires the dash down function
         }
         else if (Input.GetKeyDown(downDash) && chargeCount > 0 && onGround && canVerticalDash)//allows to down dash immediately into a horizontal dash while grounded for a larger result, at the cost of an extra charge.
         {
-            canVerticalDash = false;
-            chargeCount -= 1;
-            downDashPrepKick = groundedBonusForce;
-            Invoke(nameof(VerticalDashMemory), verticalDashCoolDown);
-            Invoke(nameof(DownDashKickDecay), downDashKickDecayTime);
-            Debug.Log("Prepped");
+            canVerticalDash = false;//prevents the player from dashing on the y axis briefly
+            chargeCount -= 1;//redduces charge count by 1
+            downDashPrepKick = groundedBonusForce;//sets up the force for the extra dash impact
+            Invoke(nameof(VerticalDashMemory), verticalDashCoolDown);//invokes the cooldown
+            Invoke(nameof(DownDashKickDecay), downDashKickDecayTime);//invokes the decay period for the kick
         }
 
         if(Input.GetKeyDown(QBKey))// registers when the player quickboosts
         {
             if (chargeCount > 0 && Input.GetKey(backwardKey))// placed at the top for highest priority, gets the player holding back and dashes in that direction
             {
-                if (lastQB != 2 && cachedQB != 2)
+                if (lastQB != 2 && cachedQB != 2)//checksto make sure the player hasn't dashed backwards within the cache or cooldown
                 {
-                    dashDirection = -1;
-                    ForwardDash();
+                    dashDirection = -1;//sets the dash direction  to -1, thus applying a backwards force
+                    ForwardDash();//firest the forward dash function
                 }
-
             }
             else if (chargeCount > 0 && Input.GetKey(leftKey))//these 2 (left and right) were essentially a coin toss in priority since realistically noone should try to do both at once
             {
-                if (lastQB != 3 && cachedQB != 3)
+                if (lastQB != 3 && cachedQB != 3)//checksto make sure the player hasn't dashed left within the cache or cooldown
                 {
-                    dashDirection = -1;// to allow for less obtuse coode, both side dashes run the same function but just reverse the actual directionit is sent. the same applies to forward and back.
-                    SideDash();
+                    dashDirection = -1;////sets the dash direction to -1, applying a force to the left
+                    SideDash();//fires the side dash function
                 }
             }
             else if (chargeCount > 0 && Input.GetKey(rightKey))
             {
-                if (lastQB != 4 && cachedQB != 4)
+                if (lastQB != 4 && cachedQB != 4)//checks to make sure the player hasn't dashed right within the cache or cooldown
                 {
-                    dashDirection = 1;
-                    SideDash();
+                    dashDirection = 1;//sets the dash direction to 1, applying a force to the right
+                    SideDash();//fires the side dash function
                 }
 
             }
             else if (chargeCount > 0)// if the player is going forward or is simply still, the default is a forward dash. lowest priority to assist in control useability
             {
-                if (lastQB != 1)
+                if (lastQB != 1)//checks to make sure the player hasn't dashed forward within the cooldown
                 {
-                    dashDirection = 1;
-                    ForwardDash();
+                    dashDirection = 1;//sets the dash direction to 1, applying a forward force
+                    ForwardDash();//fires the forward dash function
                 }
             }
         }
-    }
+    }//end of the input register function
 
-    private void DashDown()
+    private void DashDown()//start of the downdash function. this is used to allow the player to perform the down dash
     {
         rb.AddForce((transform.up * -1) * QBForce / 2, ForceMode.Impulse);// applies a downward force to the player
         downDashBounceTime = downDashBounceTimeStored;//allows a higher jump after dashing into the ground from midair. was originally done automatically but turned out EXTREMELY annoying in practice.
-        chargeCount -= 1;
-        cachedQB = lastQB;
-        lastQB = 6;
+        chargeCount -= 1;//reduces the held charges by 1
         canVerticalDash = false;// prevents theplayer from holding ctrl and space simoultaniously, draining all their charge instantly
-        amDashing = true;//used for camera calculations and slam pads.
-        Invoke(nameof(VerticalDashMemory), verticalDashCoolDown /2);
-        Invoke(nameof(QBDurationEnd), QBDuration);
-        Debug.Log("DownBoost");
-    }
+        amDashing = true;//marks the player as dashing
+        Invoke(nameof(VerticalDashMemory), verticalDashCoolDown /2);//starts the vertical dash cooldown, halved for the down dash
+        Invoke(nameof(QBDurationEnd), QBDuration);//starts the timer for the players dashing state
+    }//end of the down dash function
 
-    private void SideDash()//code to induce the sideways dash
+    private void SideDash()//start of the left/right dash function
     {
-       rb.AddForce((transform.right * dashDirection) * (QBForce * horizontalDashForceMult * downDashPrepKick), ForceMode.Impulse);
-        chargeCount -= 1;
-        CacheChecker();
-        if (dashDirection == -1)
-            lastQB = 3;
-        else if (dashDirection == 1)
-            lastQB = 4;
-        amDashing = true;
-        Invoke(nameof(HorizontalDashMemory), horizontalDashCoolDown);
-        Invoke(nameof(QBDurationEnd), QBDuration);
+       rb.AddForce((transform.right * dashDirection) * (QBForce * horizontalDashForceMult * downDashPrepKick), ForceMode.Impulse);//applies a force in the direcction selected by the player on the left/right axis
+        chargeCount -= 1;//reduces the held charges by 1
+        CacheChecker();//fires the cache checker to cache the last dash if ther is one that wasn't forward
+        if (dashDirection == -1)//checks the dash direction
+            lastQB = 3;//if the last dash was left, it stores 3
+        else//otherwise
+            lastQB = 4;//if the last dash was right, it stores 4
+        amDashing = true;//marks the player as dashing
+        Invoke(nameof(HorizontalDashMemory), horizontalDashCoolDown);//starts the horizontal dash cooldown
+        Invoke(nameof(QBDurationEnd), QBDuration);//starts the timer for the players dashing state
         Debug.Log("sideboost");
-    }
+    }//end of the left/right dash function
 
-    private void ForwardDash()// code to induce the forward/backward dash
+    private void ForwardDash()// start of the forward/backward dash function
     {
-        rb.AddForce((transform.forward * dashDirection) * (QBForce * horizontalDashForceMult * downDashPrepKick), ForceMode.Impulse);
-        chargeCount -= 1;
-        CacheChecker();
-        lastQB = 2;
-        if (dashDirection == -1)
-            lastQB = 2;
-        else if (dashDirection == 1)
-            lastQB = 1;
-        amDashing = true;
-        Invoke(nameof(HorizontalDashMemory), horizontalDashCoolDown);
-        Invoke(nameof(QBDurationEnd), QBDuration);
-        Debug.Log("forward boost");
-    }
+        rb.AddForce((transform.forward * dashDirection) * (QBForce * horizontalDashForceMult * downDashPrepKick), ForceMode.Impulse);//applies a force in the direcction selected by the player on the forward/back axis
+        chargeCount -= 1;//reduces the held charges by 1
+        CacheChecker();//fires the cache checker to cache the last dash if ther is one that wasn't forward
+        if (dashDirection == -1)//checks the dash direction
+            lastQB = 2;//if the last dash was backwards, it stores 2
+        else//otherwise
+            lastQB = 1;//if the last dash was forwards, it stores 1
+        amDashing = true;//marks the player as dashing
+        Invoke(nameof(HorizontalDashMemory), horizontalDashCoolDown);//starts the horizontal dash cooldown
+        Invoke(nameof(QBDurationEnd), QBDuration);//starts the timer for the players dashing state
+    }//end of the forward/backward dash function
 
     private void MoveDirection()//allows to move the player
     {
-        MovementDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        MovementDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;//marks the movement direction as the orientation of the players front
 
-        if (onGround)
+        if (onGround)//checks if the player is on the ground
         {
-            rb.AddForce(10 * moveSpeed * MovementDirection.normalized, ForceMode.Acceleration);
-
-            if (QBRechargeDelayChecker < chargeCount)
-            {
-                Invoke(nameof(ResetQB), QBRecharge);
-                QBRechargeDelayChecker = chargeCount;
-            }
-            else if (QBRechargeDelayChecker > chargeCount)
-            {
-                QBRechargeDelayChecker = chargeCount;
-            }
+            rb.AddForce(10 * moveSpeed * MovementDirection.normalized, ForceMode.Acceleration);//if so, applies ground drag and movement
         }
-        else 
+        else //if the player is not grounded
         {
-            rb.AddForce(10 * airmultiplier * moveSpeed * MovementDirection.normalized, ForceMode.Force);//used for air movement so that it doesnt feel identical to grounded movement.
+            rb.AddForce(10 * airmultiplier * moveSpeed * MovementDirection.normalized, ForceMode.Force);//applies air movement to the player
         }
-    }
+    }//end of the move direction unction
     private void SpeedControl()//this controls speed limits, and prevents attaining max speed by exclusively walking.
     {
         Vector3 flatVel = new(rb.linearVelocity.x, 0, rb.linearVelocity.z);//gets the players flat velocity
 
         if (flatVel.magnitude > moveSpeed && flatVel.magnitude < overSpeedThreshhold )//caps the base plaer speed
         {
-         Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+         Vector3 limitedVel = flatVel.normalized * moveSpeed;//locks and averages the players speed
+            rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);//vector3 is made so that it does not count the upward velocity
         }
-        else if (flatVel.magnitude > overSpeedThreshhold && flatVel.magnitude < overSpeed)//reduces speed ofver the default cap over time, to help incentivise quick movement
+        else if (flatVel.magnitude > overSpeedThreshhold && flatVel.magnitude < overSpeed)//reduces speed over the default cap over time, to help incentivise quick movement
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x - Time.deltaTime / 2, rb.linearVelocity.y, rb.linearVelocity.z  - Time.deltaTime / 2);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x - Time.deltaTime / 2, rb.linearVelocity.y, rb.linearVelocity.z  - Time.deltaTime / 2);//decrements over speed by time.deltatime
         }
         else if(flatVel.magnitude > overSpeed)// caps the over speed.
         {
-            Vector3 limitedOverVel = flatVel.normalized * overSpeed;
-            rb.linearVelocity = new Vector3(limitedOverVel.x, rb.linearVelocity.y, limitedOverVel.z);
+            Vector3 limitedOverVel = flatVel.normalized * overSpeed;//averages and locks the overspeed
+            rb.linearVelocity = new Vector3(limitedOverVel.x, rb.linearVelocity.y, limitedOverVel.z);//vector3 is made so that it does not count the upward velocity
         }
-    }
+    }//end of the speed control function
     private void Jump()// allows to jump
     {
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);//resets players vertical velocity so that you can actually jump out of an extended fall.
-        if (speedLockTimer > 0)
+        if (speedLockTimer > 0)//checks if the speed lock timer is above 0
         {
-            rb.AddForce(transform.up * (QBForce / boostChainFallOff), ForceMode.Impulse);
+            rb.AddForce(transform.up * (QBForce / boostChainFallOff), ForceMode.Impulse);//if so, jump force is halved, as to avoid it launching the player
             canVerticalDash = false;//this is used for cooldowns of both the jump and the down dash.
         }
-        else if (downDashBounceTime > 0 && onGround == true)
+        else if (downDashBounceTime > 0.9 && onGround == true)//checks if the player has slammed into the ground with the down dash
         {
-            rb.AddForce((downDashBounceTime) * (QBForce * downDashBounceForce) * transform.up, ForceMode.Impulse);
-            downDashBounceTime = 0;
+            rb.AddForce((downDashBounceTime) * (QBForce * downDashBounceForce) * transform.up, ForceMode.Impulse);//applies the bounce force to the players jump immediately after
+            downDashBounceTime = 0;//clears the bounce time
         }
-        else
+        else//if neither of the above cases are in effect
         {
-            rb.AddForce(transform.up * QBForce, ForceMode.Impulse);
-            canVerticalDash = false;
+            rb.AddForce(transform.up * QBForce, ForceMode.Impulse);//calculate jump force normally
+            canVerticalDash = false;//stop vertical dashing
         }
 
-        lastQB = 5;
-        speedLockTimer = speedLockTimerStored;
-        Invoke(nameof(VerticalDashMemory), verticalDashCoolDown);
-        Invoke(nameof(QBDurationEnd), QBDuration);
+        speedLockTimer = speedLockTimerStored;//resets the speed lock timer
+        Invoke(nameof(VerticalDashMemory), verticalDashCoolDown);//starts the vertical dash cooldown
+        Invoke(nameof(QBDurationEnd), QBDuration);//marks the player as dashing
 
 
-    }
+    }//end of the jump function
     public void HorizontalDashMemory()// remembers the last quickboost performed to allow chainboosting. chainboosting is an idea taken from an animation cancel exploit found in armoured core for answer.
     {
-        cachedQB = 0;
-        lastQB = 0;
-    }
-    public void VerticalDashMemory()//allows to do the same as above but for dashing up and down
+        cachedQB = 0;//clears the cached QB
+        lastQB = 0;//clears the last QB
+    }//end of QB memory function
+    public void VerticalDashMemory()//used to give dashing up and down a semi-seperate cooldown
     {
-        canVerticalDash = true;
-    }
+        canVerticalDash = true;//allows the player to vertical dash
+    }//end of the vertical dash memory function
 
     public void ResetQB()// slowly increases stored charges.
     {
-        if (chargeCount != dashCountStored)//prevents it from trying to recharge when charges are full
+        if (chargeCount != chargeCountStored)//prevents it from trying to recharge when charges are full
         {
-
-            if (onGround)
+            if (onGround)//checks if the player is grounded
             {
-                dashRechargeInterval += Time.deltaTime * chargeRechargeGroundedBonus;
+                chargeRechargeInterval += Time.deltaTime * chargeRechargeGroundedBonus;//if the player is grounded, apply a multiplier to the recharge speed
             }
-            else
+            else//if the player is midair
             {
-                dashRechargeInterval += Time.deltaTime;//this if statement exists so that dashes recharge faster when grounded.
+                chargeRechargeInterval += Time.deltaTime;//recharge the charges at a normal pace
             }
-            if (dashRechargeInterval > dashAccumulationThreshhold)// this is used as opposed to a raw time.deltatime to allow charges to take more time to fill.
+            if (chargeRechargeInterval > chargeAccumulationThreshhold)//tracks the recharge intervals value. when it reaches the set value a dash is added back and the interval is reset
             {
-                chargeCount += 1;
+                chargeCount += 1;//increases charge count by 1
 
-                dashRechargeInterval = 0;
+                chargeRechargeInterval = 0;//resets the recharge interval
             }
-
         }
         else
         {
-            dashRechargeInterval = 0;
+            chargeRechargeInterval = 0;//if the charges are full, just reset
         }
-    }
+    }//end of reset QB function
     public void DownDashKickDecay()//decays the downdash boost increase
     {
         downDashPrepKick = 1;//sets the boost kick value to 1, as to avoid it multplying dash force by 0, cancelling them. 
-    }
-    public void QBDurationEnd()// ends the dash duration
+    }//end of the down dash decay function
+    public void QBDurationEnd()// ends the QB duration
     {
         amDashing = false;//used to communicate externally that the player is no longer dashing.
-    }
+    }//end of the QB duration function
     public void CoyoteTime()// ends the coyoteTIme grace period.
     {
         canGroundJump = false;//ends the coyote time window and activates the state where jumping requires charges.
-    }
-    private void DashExpendLenience()
+    }//end of the coyote time function
+    private void CacheChecker()//start of the cache checker script. this allows the last QB to be cached, thus meaning more skill needs to be applied in regards to boost timing.
     {
-        if (chargeCount - 1 > 1)
+        if (lastQB != 1)//checks if the last QB was a forward dash
         {
-            if (dashCountLenienceStored -1 > (chargeCount))
-            {
-                chargeCount += 1;
-            }
+            cachedQB = lastQB;//caches the last QB to keep its cooldown consistent. if 3 dashes are performed the cche gets emptied, this is intentional
         }
-        if (lenienceStackBlock)
-        {
-            
-            lenienceStackBlock = false;
-        }
-        Invoke(nameof(DashExpendLenienceFire), chargeExpendedLeniencyDelay);
-    }
-    public void DashExpendLenienceFire()
-    {
-        dashCountLenienceStored = chargeCount;
-        lenienceStackBlock = true;
-    }
-    private void CacheChecker()
-    {
-        if (lastQB != 1)
-        {
-            cachedQB = lastQB;//caches thelast qb to keep its cooldown consistent. if 3 dshes are performed the cche gets emptied, this is intentional
-        }
-        else
+        else//if it was a forward dash
         {
             cachedQB = 0;//this allows you to cancel the forward dash cooldwon by dashing in a different direction, allowing far more frantic movement.
         }
     }
-
-}
+}//end of the base movement script

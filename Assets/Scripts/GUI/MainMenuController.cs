@@ -2,87 +2,82 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenuController : MonoBehaviour
+public class MainMenuController : MonoBehaviour//start of the script for controlling the main menu
 {
-    [SerializeField] GameObject menuMain;
-    [SerializeField] GameObject menuLevelSelect;
-    [SerializeField] TextMeshProUGUI level1TimeDisplay;
-    [SerializeField] TextMeshProUGUI level2TimeDisplay;
-    [SerializeField] TextMeshProUGUI level3TimeDisplay;
-    [SerializeField] TextMeshProUGUI level4TimeDisplay;
-    private LevelCompletionTracker LCT;
-    private void Start()
+    [SerializeField] GameObject menuMain;//the canvas for the actual menu
+    [SerializeField] GameObject menuLevelSelect;//the canvas for the level select screen
+    [SerializeField] TextMeshProUGUI level1TimeDisplay;//the display for the best time on level 1
+    [SerializeField] TextMeshProUGUI level2TimeDisplay;//the display for the best time on level 2
+    [SerializeField] TextMeshProUGUI level3TimeDisplay;//the display for the best time on level 3
+    [SerializeField] TextMeshProUGUI level4TimeDisplay;//the display for the best time on level 4
+    private LevelCompletionTracker LCT;//the level completion tracker
+    private void Start()//start of start
     {
-        LCT = FindFirstObjectByType<LevelCompletionTracker>();
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        if (LCT.level1_BestTime > -1)
+        LCT = FindFirstObjectByType<LevelCompletionTracker>();//gets the level completion tracker and stores it
+        Cursor.lockState = CursorLockMode.None;//unlocks the cursor
+        Cursor.visible = true;//makes the cursor visible
+        if (LCT.level1_BestTime > -1)//checks if a best time exists for level 1
         {
-            level1TimeDisplay.text = LCT.level1_BestTime.ToString("0:00.00");
+            level1TimeDisplay.text = LCT.level1_BestTime.ToString("0:00.00");//if it does, sets the level select time display for level 1 to it
         }
        
-        if (LCT.level2_BestTime > -1)
+        if (LCT.level2_BestTime > -1)//checks if a best time exists for level 2
         {
-            level2TimeDisplay.text = LCT.level2_BestTime.ToString("0:00.00");
+            level2TimeDisplay.text = LCT.level2_BestTime.ToString("0:00.00");//if it does, sets the level select time display for level 2 to it
         }
 
-        if (LCT.level3_BestTime > -1)
+        if (LCT.level3_BestTime > -1)//checks if a best time exists for level 3
         {
-            level3TimeDisplay.text = LCT.level3_BestTime.ToString("0:00.00");
+            level3TimeDisplay.text = LCT.level3_BestTime.ToString("0:00.00");//if it does, sets the level select time display for level 3 to it
         }
 
-        if (LCT.level4_BestTime > -1)
+        if (LCT.level4_BestTime > -1)//checks if a best time exists for level 4
         {
-            level4TimeDisplay.text = LCT.level4_BestTime.ToString("0:00.00");
+            level4TimeDisplay.text = LCT.level4_BestTime.ToString("0:00.00");//if it does, sets the level select time display for level 4 to it
         }//this chain of ifs are here to change the best time on the level select while allowing it to be blank if not beaten. the tutorial has no timer as it is not meant to be replayed constantly
      
         
-        menuLevelSelect.SetActive(false);
+        menuLevelSelect.SetActive(false);//disables the level select UI
         
-    }
-    public void StartPress()
+    }//end of start
+    public void QuitPress()//start of the function for quitting
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
+        Application.Quit();//closes the application 
+    }//end of the function for quitting
 
-    public void QuitPress()
+    public void LevelSelectPress()//start of level select press (displayed as start)
     {
-        Application.Quit();
-    }
+        menuMain.SetActive(false);//disables the base menu
+        menuLevelSelect.SetActive(true);//enables the level select
+    }//end of the level select function
 
-    public void LevelSelectPress()
+    public void ReturnToMenuPress()//start of the return to menu button function
     {
-        menuMain.SetActive(false);
-        menuLevelSelect.SetActive(true);
-    }
+        menuMain.SetActive(true);//enables the main menu
+        menuLevelSelect.SetActive(false);//disables the level select
+    }//end of the return to menu button function
 
-    public void ReturnToMenuPress()
+    public void OnTutorialPress()//start of the function for the tutorial (level 0) selection
     {
-        menuMain.SetActive(true);
-        menuLevelSelect.SetActive(false);
-    }
+        SceneManager.LoadScene(1);//loads the tutorial
+    }//end of the function for selecting the tutorial
 
-    public void OnTutorialPress()
+    public void OnLevel1Press()//start of the function for the level 1 selection
     {
-        SceneManager.LoadScene(1);
-    }
+        SceneManager.LoadScene(2);//loads level 1
+    }//end of the function for selecting level 1
+    public void OnLevel2Press()//start of the function for the level 2 selection
+    {
+        SceneManager.LoadScene(3);//loads level 2
+    }//end of the function for selecting level 2
 
-    public void OnLevel1Press()
+    public void OnLevel3Press()//start of the function for the level 3 selection
     {
-        SceneManager.LoadScene(2);
-    }
+        SceneManager.LoadScene(4);//loads level 3
+    }//end of the function for selecting level 3
 
-    public void OnLevel2Press()
+    public void OnLevel4Press()//start of the function for the level 4 selection
     {
-        SceneManager.LoadScene(3);
-    }
-    public void OnLevel3Press()
-    {
-        SceneManager.LoadScene(4);
-    }
-
-    public void OnLevel4Press()
-    {
-        SceneManager.LoadScene(5);
-    }//i feel all these level based inputs are very clear as to wat they do.
+        SceneManager.LoadScene(5);//loads level 4
+    }//end of the function for selecting level 4
 }

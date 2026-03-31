@@ -838,9 +838,9 @@ MonoBehaviour:
   timerResult: {fileID: 5472977453806669680}
   timerResultText: {fileID: 2600287764098301940}
   prevBestTime: {fileID: 5819606990370461575}
+  prevBestTimeText: {fileID: 7492902917184087251}
   differenceInTime: {fileID: 5883199296717688194}
   differenceInTimeText: {fileID: 7352598928100687535}
-  prevBestTimeText: {fileID: 7492902917184087251}
   timerValue: 0
   MinuteTicker: 0
 --- !u!1 &1347611326932628252
@@ -2266,7 +2266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FinalLevel: 0
-  VictoryHud: {fileID: 1859218989559753705}
+  VictoryUI: {fileID: 1859218989559753705}
   pauseMenuButtons: {fileID: 1157481351393076305}
   levelEnded: 0
 --- !u!1 &3311682875571840609
@@ -2690,8 +2690,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resumePress: 0
-  pauseHUD: {fileID: 2768749733081377771}
-  VSC: {fileID: 4779632111648344287}
+  pauseUI: {fileID: 2768749733081377771}
 --- !u!1 &3411591655416342536
 GameObject:
   m_ObjectHideFlags: 0
@@ -2957,41 +2956,37 @@ MonoBehaviour:
   moveSpeed: 10
   overSpeed: 20
   orientation: {fileID: 6667348167635368911}
-  grounded: 0
   groundDrag: 5
   iceDrag: 1
   QBForce: 10
-  QBForceMult: 2
+  horizontalDashForceMult: 1.5
   airmultiplier: 0.5
-  dashCount: 9
-  downDashBounceForce: 1
+  chargeCount: 9
+  downDashBounceForce: 0.8
   forwardKey: 119
   leftKey: 97
   backwardKey: 115
   rightKey: 100
-  downDashBounce: 0
   dashDirection: 0
   dashCountStored: 0
   lastQB: 0
   cachedQB: 0
   downDashPrepKick: 10
-  groundedBonusForce: 5
-  QBCoolDown: 1.5
+  groundedBonusForce: 10
+  horizontalDashCoolDown: 1
   QBRecharge: 0.5
-  QBRechargeDelayChecker: 0
-  verticalCoolDown: 0.5
+  verticalDashCoolDown: 0.5
   QBMemoryTime: 0.5
-  dashAccumulationThreshhold: 5
+  chargeAccumulationThreshhold: 5
   coyoteTimer: 0.3
   amDashing: 0
-  downDashBounceTime: 4
-  dashDuration: 0.2
+  downDashBounceTime: 3
+  QBDuration: 1
   speedLockTimer: 0.5
   boostChainFallOff: 10
   downDashKickDecayTime: 1
   chargeRechargeGroundedBonus: 2.5
-  chargeExpendedLeniencyDelay: 0.02
-  dashRechargeInterval: 0
+  chargeRechargeInterval: 0
   jumpKey: 32
   QBKey: 323
   downDash: 324

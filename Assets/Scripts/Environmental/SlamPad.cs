@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SlamPad : MonoBehaviour
+public class SlamPad : MonoBehaviour//this is used for slam pads, which refill your charges when dashed into
 {//start of slam pad script
     [SerializeField] private bool singleUse;//manually set bool that dictates whether the pad will recharge or not
     [SerializeField] private float coolDown;//manually set value for the cooldown if it is rechargeable
@@ -23,7 +23,7 @@ public class SlamPad : MonoBehaviour
                 playerMovement = other.GetComponent<BaseMovement>();//stores the players movement script
                 if (playerMovement.amDashing)//checks if the player is dashing
                 {
-                    playerMovement.chargeCount = playerMovement.dashCountStored;//refills the players dashes.
+                    playerMovement.chargeCount = playerMovement.chargeCountStored;//refills the players dashes.
                     hitstopfirer.OnHitStopStart();//fires the hit stop FX script.
                     playerMovement = null;//clears the stored movement script
                     coolDown = coolDownStored;//resets the cooldown

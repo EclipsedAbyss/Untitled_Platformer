@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class VictoryTrigger : MonoBehaviour
+public class VictoryTrigger : MonoBehaviour//this is used to detect the player reaching the end of the level.
 {//start of the victory trigger script
     private VictoryScreenController getVictoryController;//used to store the victory ui controller
     private LevelCompletionTracker LCT;//used to store the level completion tracker

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BouncePad : MonoBehaviour//used for the bounce pads
+public class BouncePad : MonoBehaviour//used for the bounce pads. I feel the name is self explanatory
 {//start of bounce pad script
     private Rigidbody objectRigidbody;//gets the rigidbody of the object collidimg with it
     public float bouncePadForce;//the manually set force the pad will apply

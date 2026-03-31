@@ -18,11 +18,11 @@ public class HUDController : MonoBehaviour
         chargeCounterRaw.text = playerMovementInfo.chargeCount.ToString("Charges Remaining: 0");//used for the debug text display
         if (playerMovementInfo.chargeCount != 9)//used to check if the player has the maximum amount of charges
         {
-            chargeTimer.value = playerMovementInfo.dashRechargeInterval;//this allows the recharge time to display.
+            chargeTimer.value = playerMovementInfo.chargeRechargeInterval;//this allows the recharge time to display.
         }
         else//if they do have the max amount of stored charges
         {
-            chargeTimer.value = playerMovementInfo.dashAccumulationThreshhold;//fully fill the timer display instead of letting it fill up aimlessly forever
+            chargeTimer.value = playerMovementInfo.chargeAccumulationThreshhold;//fully fill the timer display instead of letting it fill up aimlessly forever
         }
 
     }//end of update
