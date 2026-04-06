@@ -18,7 +18,10 @@ public class VictoryTrigger : MonoBehaviour//this is used to detect the player r
         {
             HUD.HUDCanvas.SetActive(false);//disables the players HUD
             getVictoryController.OnLevelEnd();//runs the victory screen controllers onlevelend function
-            LCT.OnLevelCompletion();//runs the level completion trackers level completion function
+            if (LCT.currentLevel != 1)
+            {
+                LCT.OnLevelCompletion();//runs the level completion trackers level completion function
+            }
         }//end of ontriggerenter
     }
 }//end of the victory trigger script

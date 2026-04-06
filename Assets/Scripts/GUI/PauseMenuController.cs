@@ -5,15 +5,20 @@ public class PauseMenuController : MonoBehaviour
 {//start of the pause menu controller script
     private bool paused;//bool to allow the pause menu to toggle
     public bool resumePress;//bool to register when resume is pressed
+    private bool settings;//used to check if the pause menu is open or not
     private DeathUIController playerDeathTracker;//used to avoid pausing on the death screen
     private VictoryScreenController playerVictoryTracker;//used to track if the player has ended the level or not
     [SerializeField] GameObject pauseUI;//used to store the HUD for the pause menu
+    [SerializeField] private SettingsController settingsUpdater;//the settings controller
+    [SerializeField] private GameObject settingsUI;//the UI for the settings
 
 
     private void Start()//start of start
     {
         playerDeathTracker = FindFirstObjectByType<DeathUIController>();//finds the death hud controller so it can figure out if the player is dead or not
-        playerVictoryTracker = FindFirstObjectByType<VictoryScreenController>();//finds the victory hud controller so the game can verify if the level has ended or not
+        playerVictoryTracker = FindFirstObjectByType<VictoryScreenController>();//finds the victory hud controller so the game can verify if the level has ended or not 
+        settingsUpdater.UpdateSettings();//fires UpdateSettings to get the info of the initial settings0
+        settingsUpdater.UpdateSettings();//fires UpdateSettings a second time to set the data properly
     }//end of start
     private void Update()//start of update
     {
@@ -26,17 +31,18 @@ public class PauseMenuController : MonoBehaviour
              Cursor.lockState = CursorLockMode.None;//unlocks the cursor
              pauseUI.SetActive(true);//enables the pause UI
              Cursor.visible = true;//makes the cursor visible
-             resumePress = false;//turns off the resume press bool
             }
             else//if the game is paused
             {
-             Time.timeScale = 1;//resume time
+                Time.timeScale = 1;//resume time
                 paused = false;//set paused toggle to false
              Cursor.lockState = CursorLockMode.Locked;//lock the cursor
              pauseUI.SetActive(false);//disable the pause UI
+             settingsUI.SetActive(false);
              Cursor.visible = false;//hides the cursor
-             resumePress = false;//turns off the resumepress bool
             }
+            resumePress = false;//turns off the resume press bool
+            settingsUpdater.UpdateSettings();//updates the settings values
         }
     }//end of update
 
@@ -64,4 +70,21 @@ public class PauseMenuController : MonoBehaviour
     {
         Application.Quit();//quits the application
     }//end of the quit to desktop function
+
+    public void Settings()//start of the settings button functions
+    {
+        if(!settings)//if settings ui is off
+        {
+            settingsUI.SetActive(true);//enables the settings UI
+            pauseUI.SetActive(false);//disables the pause UI
+            settings = true; //marks settings UI as enabled
+        }
+        else//if settings UI is on
+        {
+            settingsUI.SetActive(false);//disables the Settings UI
+            pauseUI.SetActive(true);//enables the pause UI 
+            settings = false;//marks settings UI as disabled
+        }
+
+    }//end of the settings button functions
 }//end of the pause menu controller script

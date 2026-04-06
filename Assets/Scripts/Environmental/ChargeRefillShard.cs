@@ -7,7 +7,15 @@ public class ChargeRefillShard : MonoBehaviour
     [SerializeField] private float chargeTime;//the manually set time it takes for the shard to recharge
     [SerializeField] private Material activeMaterial;//the material used when the charge is active
     [SerializeField] private Material inactiveMaterial;//the material used when the shard is inactive
+    [SerializeField] private GameObject particles;//stores a prefab for the particles that allow visual feedback for collecting a charge
+    [SerializeField] private GameObject overlayParticles;//stores a prefab for the particles that display as a screen effect when collecting a charge
+    private Transform overlay;//hte position of the camera used for screen effects
     private bool charged = true;//used to tell the script if the shard is charged or not.
+
+    private void Awake()//start of awake
+    {
+        overlay = FindFirstObjectByType<OverlayPos>().transform;//gets the position of the screen overlay camera
+    }//end of awake
     private void OnTriggerEnter(Collider other)//start of ontriggerenter
     {
         if (charged)//if the shard is charged
@@ -19,6 +27,8 @@ public class ChargeRefillShard : MonoBehaviour
                 charged = false;//sets the charged state to false
                 gameObject.GetComponent<MeshRenderer>().material = inactiveMaterial;//sets the material of the shard to the inactive material
                 Invoke(nameof(Recharge), chargeTime);//starts the recharge delay
+                Instantiate(particles, this.transform);//spawns the world particles on the shard
+                Instantiate(overlayParticles, overlay);//spawns the screen effect particles
                 player = null;//reset player field to avoid inconsistencies with consecutive uses
             }
         }

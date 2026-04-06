@@ -1,9 +1,13 @@
 using UnityEngine;
 
-public class Glass : MonoBehaviour//needed context. this script is on a trigger surrounding the glass object itself to avoid it breaking flow of movement.
+public class EmergencyGlass : MonoBehaviour
 {//beginning of the glass script
     private BaseMovement playerMovement;//used to get the players state on if it is dashing or not
-    [SerializeField] private GameObject glass;//the glass object itself
+    private GameObject glass;//the glass object itself
+    private void OnEnable()
+    {
+        glass = this.gameObject;
+    }
     private void OnTriggerEnter(Collider other)//start of trigger functions
     {
         if (other.GetComponent<BaseMovement>() != null)//checks if the colliding object actually is the player (this is mainly precautionary)
@@ -16,3 +20,4 @@ public class Glass : MonoBehaviour//needed context. this script is on a trigger 
         }
     }//end of trigger functions
 }//end of the glass script
+

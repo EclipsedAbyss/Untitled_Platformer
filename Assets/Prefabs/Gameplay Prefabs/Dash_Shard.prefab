@@ -125,3 +125,5 @@ MonoBehaviour:
   chargeTime: 2
   activeMaterial: {fileID: 2100000, guid: 4cb1caae11e11b54da24aae18068ffc9, type: 2}
   inactiveMaterial: {fileID: 2100000, guid: 45968088d66438847bbb32f16db14dc2, type: 2}
+  particles: {fileID: 3748192359766013373, guid: d34bb8bd45ef1024799c528d71dab9d7, type: 3}
+  overlayParticles: {fileID: 7777212122552544531, guid: e16f7bc2ec624d9429d55dda0665830f, type: 3}

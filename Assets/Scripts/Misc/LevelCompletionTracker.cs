@@ -23,7 +23,7 @@ public class LevelCompletionTracker : MonoBehaviour//this script is used to stor
     }//end of onenable
     private void Start()//start of start
     {
-        DontDestroyOnLoad(gameObject);//marks the object to not be destroyed on load. ran seperately from the duplicate check to avoid any possible issues
+        DontDestroyOnLoad(gameObject);//marks the object to not be destroyed on load. ran seperately from the duplicate check to avoid any possible issues, includes added information scripts.
       
     }//end of start
 
@@ -136,6 +136,8 @@ public class LevelCompletionTracker : MonoBehaviour//this script is used to stor
                     break;//end
 
             }
+
+            
             if (isLevelCompleted)//checks if the level has been completed, if so and the best time is better, give positive feedback
             {
                 timer.differenceInTime.color = Color.green;//mark the difference display as green to show its a good difference

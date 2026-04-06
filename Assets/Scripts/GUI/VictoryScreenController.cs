@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,7 +8,6 @@ public class VictoryScreenController : MonoBehaviour
     [SerializeField] GameObject VictoryUI;//the canvas for the VIctory UI
     [SerializeField] PauseMenuController pauseMenuButtons;//used to access the pause buttons to avoid having 2 near identical scripts for UI intractions.
     [HideInInspector] public bool levelEnded;//used to tell other scripts that the level is over
-
 
 
     private void Start()//start of start
@@ -20,6 +20,7 @@ public class VictoryScreenController : MonoBehaviour
         Time.timeScale = 0;
         VictoryUI.SetActive(true);
         levelEnded = true;
+
     }//end of the lvelend function
 
     public void Next()//start of the next function. this loads the next scene
