@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,12 +6,24 @@ public class LevelCompletionTracker : MonoBehaviour//this script is used to stor
 {//start of the level completion tracker script
     public float currentLevel;//the current loaded scene 
     [HideInInspector]public float level1_BestTime = -1;//the stored best time for level 1. -1 is used by default because it is very easy to differentiate from an actual plausable time.
+    [HideInInspector] public int level1_Rank;
     [HideInInspector] public float level2_BestTime = -1;//the stored best time for level 2
+    [HideInInspector] public int level2_Rank;
     [HideInInspector] public float level3_BestTime = -1;//the stored best time for level 3
+    [HideInInspector] public int level3_Rank;
     [HideInInspector] public float level4_BestTime = -1;//the stored best time for level 4
+    [HideInInspector] public int level4_Rank;
+    [HideInInspector] public int rank;
+    [HideInInspector] public float timeForS;
+    [HideInInspector] public float timeForA;
+    [HideInInspector] public float timeForB;
+    [HideInInspector] public float timeForC;
     public bool isLevelCompleted;//used to check if the level is complete. if it is not the timer stays disabled
     public float currentLevelBestTime;//used to store the best time of the current loaded scene
     private TimerController timer;//used to get the times used
+    private LevelTimeReqs rankRequirements;
+
+    private string rankLabels = "SABCD";
 
 
     private void OnEnable()//start of onenable
@@ -31,6 +44,11 @@ public class LevelCompletionTracker : MonoBehaviour//this script is used to stor
     {
         currentLevel = SceneManager.GetActiveScene().buildIndex;//gets the current levels build index
         timer = FindFirstObjectByType<TimerController>();//finds the timer in this scene
+        rankRequirements = FindFirstObjectByType<LevelTimeReqs>();
+        timeForS = rankRequirements.timeForS;
+        timeForA = rankRequirements.timeForA;
+        timeForB = rankRequirements.timeForB;
+        timeForC = rankRequirements.timeForC;
 
         switch (currentLevel)//used to get the information relative to the current scene
         {
@@ -57,6 +75,7 @@ public class LevelCompletionTracker : MonoBehaviour//this script is used to stor
                     default://if the scene index has no corresponding level we
                 //do nothing.
             break;//end
+
         }
     }
 
@@ -110,25 +129,49 @@ public class LevelCompletionTracker : MonoBehaviour//this script is used to stor
             timer.prevBestTime.text = ("0:00.00");//marked best time is 0 as it didnt exist prior
         }
 
-            
-        if (timer.timerValue != -1 && isLevelCompleted == false || timer.timerValue < currentLevelBestTime )//checks if this is the first run or if this run was faster then the prior one
+        if (timer.timerValue < timeForS)
+        {
+            rank = 0;
+        }
+        else if (timer.timerValue < timeForA)
+        {
+            rank = 1;
+        }
+        else if (timer.timerValue < timeForB )
+        {
+            rank = 2;
+        }
+        else if (timer.timerValue < timeForC )
+        {
+            rank = 3;
+        }
+        else
+        {
+            rank = 4;
+        }
+
+        if (timer.timerValue != -1 && isLevelCompleted == false || timer.timerValue < currentLevelBestTime)//checks if this is the first run or if this run was faster then the prior one
         {
             switch (currentLevel)// detects the current level and uses its specific stored time values.
             {
                 case 2://if the loaded scene index is 2
                     level1_BestTime = timer.timerValue;//update the best time for level 1 to the current run
+                    level1_Rank = rank;
                     break;//else
 
                 case 3://if the loaded scene index is 3
                     level2_BestTime = timer.timerValue;//update the best time for level 2 to the current run
+                    level2_Rank = rank;
                     break;//else
 
                 case 4://if the loaded scene index is 4
                     level3_BestTime = timer.timerValue;//update the best time for level 3 to the current run
+                    level3_Rank = rank;
                     break;//else
 
                 case 5://if the loaded scene index is 5
                     level4_BestTime = timer.timerValue;//update the best time for level 4 to the current run
+                    level4_Rank = rank;
                     break;//else
 
                 default://if the loaded scene is not registered, it won't have a timer and can be ignored
@@ -137,21 +180,24 @@ public class LevelCompletionTracker : MonoBehaviour//this script is used to stor
 
             }
 
-            
+
+
             if (isLevelCompleted)//checks if the level has been completed, if so and the best time is better, give positive feedback
             {
                 timer.differenceInTime.color = Color.green;//mark the difference display as green to show its a good difference
                 timer.differenceInTimeText.color = Color.green;//alongside its accompanied text
                 timer.prevBestTimeText.text = ("Previous Best Time");//changes best time to state that the prior best time is no longer the best time
                 timer.timerResultText.text = ("New Best Time");//marks this run as your current best time in the text
+
             }
         }
         else//if the timer is worse and this isnt your first run
         {
             timer.differenceInTime.color = Color.red;//mark the difference in red to show it is not an improvement
             timer.differenceInTimeText.color = Color.red;//alogside its accompanied text
-            
+
         }
             timer.timerResult.text = timer.timerValue.ToString("0:00.00");//simply sets the text on the end screen for the current run to the proper display
+        timer.rankDisplay.text = rankLabels[rank].ToString();
     }
 }//end of the level completion tracker script

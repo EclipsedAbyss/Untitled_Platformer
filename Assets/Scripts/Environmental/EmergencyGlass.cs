@@ -6,13 +6,13 @@ public class EmergencyGlass : MonoBehaviour
     private GameObject glass;//the glass object itself
     private void OnEnable()
     {
-        glass = this.gameObject;
+        glass = this.gameObject;//used to get the gameobject f the glass. this is here to make glass easier to break
     }
-    private void OnTriggerEnter(Collider other)//start of trigger functions
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.GetComponent<BaseMovement>() != null)//checks if the colliding object actually is the player (this is mainly precautionary)
+        if (collision.gameObject.GetComponent<BaseMovement>() != null)//checks if the colliding object actually is the player (this is mainly precautionary)
         {
-            playerMovement = other.GetComponent<BaseMovement>();//if it is the player, we get the base movement
+            playerMovement = collision.gameObject.GetComponent<BaseMovement>();//if it is the player, we get the base movement
             if (playerMovement.amDashing)//and check if the player is dashing.
             {
                 Destroy(glass);//destroys the glass if the player is in fact dashing

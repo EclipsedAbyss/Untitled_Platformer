@@ -11,6 +11,7 @@ public class TimerController : MonoBehaviour
     public TextMeshProUGUI prevBestTimeText;//the text beneath the display for the prev best time to state what it is
     public TextMeshProUGUI differenceInTime;//the timer display that shows the difference between your best/previous best and your current time.
     public TextMeshProUGUI differenceInTimeText;//the text beneath the difference display that states what it is
+    public TextMeshProUGUI rankDisplay;
     private LevelCompletionTracker LCT;// about 75% of these fields are NOT used in this script, but rather are stored here to allow the Level COmpletion Tracker to access them all without running more then one findObject.
 
     public float timerValue;//the current time passed

@@ -8,6 +8,7 @@ public class StoredSettings : MonoBehaviour
     public bool VSYNC;//used so players can toggle vsync
     public bool FPSUncap;//used so technologically well off players can uncap the framerate
 
+
     private void OnEnable()//start of onenable
     {
         LevelCompletionTracker[] duplicates = FindObjectsByType<LevelCompletionTracker>(FindObjectsSortMode.None);//used to check if a levelcompletiontracker already exists
@@ -21,4 +22,5 @@ public class StoredSettings : MonoBehaviour
         DontDestroyOnLoad(gameObject);//marks the object to not be destroyed on load. ran seperately from the duplicate check to avoid any possible issues, includes added information scripts.
 
     }//end of start
+
 }

@@ -7,10 +7,16 @@ public class MainMenuController : MonoBehaviour//start of the script for control
     [SerializeField] GameObject menuMain;//the canvas for the actual menu
     [SerializeField] GameObject menuLevelSelect;//the canvas for the level select screen
     [SerializeField] TextMeshProUGUI level1TimeDisplay;//the display for the best time on level 1
+    [SerializeField] TextMeshProUGUI level1RankDisplay;
     [SerializeField] TextMeshProUGUI level2TimeDisplay;//the display for the best time on level 2
+    [SerializeField] TextMeshProUGUI level2RankDisplay;
     [SerializeField] TextMeshProUGUI level3TimeDisplay;//the display for the best time on level 3
+    [SerializeField] TextMeshProUGUI level3RankDisplay;
     [SerializeField] TextMeshProUGUI level4TimeDisplay;//the display for the best time on level 4
+    [SerializeField] TextMeshProUGUI level4RankDisplay;
     private LevelCompletionTracker LCT;//the level completion tracker
+
+    private string ranks = "SABCD";//stores the letters displayed for level rankLabels
     private void Start()//start of start
     {
         LCT = FindFirstObjectByType<LevelCompletionTracker>();//gets the level completion tracker and stores it
@@ -19,21 +25,26 @@ public class MainMenuController : MonoBehaviour//start of the script for control
         if (LCT.level1_BestTime > -1)//checks if a best time exists for level 1
         {
             level1TimeDisplay.text = LCT.level1_BestTime.ToString("0:00.00");//if it does, sets the level select time display for level 1 to it
+            level1RankDisplay.text = ranks[LCT.level1_Rank].ToString();
         }
+    
        
         if (LCT.level2_BestTime > -1)//checks if a best time exists for level 2
         {
             level2TimeDisplay.text = LCT.level2_BestTime.ToString("0:00.00");//if it does, sets the level select time display for level 2 to it
+            level2RankDisplay.text = ranks[LCT.level2_Rank].ToString();
         }
 
         if (LCT.level3_BestTime > -1)//checks if a best time exists for level 3
         {
             level3TimeDisplay.text = LCT.level3_BestTime.ToString("0:00.00");//if it does, sets the level select time display for level 3 to it
+            level3RankDisplay.text = ranks[LCT.level3_Rank].ToString();
         }
 
         if (LCT.level4_BestTime > -1)//checks if a best time exists for level 4
         {
             level4TimeDisplay.text = LCT.level4_BestTime.ToString("0:00.00");//if it does, sets the level select time display for level 4 to it
+            level4RankDisplay.text = ranks[LCT.level4_Rank].ToString();
         }//this chain of ifs are here to change the best time on the level select while allowing it to be blank if not beaten. the tutorial has no timer as it is not meant to be replayed constantly
      
         

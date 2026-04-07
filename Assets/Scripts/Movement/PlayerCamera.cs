@@ -92,11 +92,11 @@ public class PlayerCamera : MonoBehaviour//this controls the players camera
         if (storedCamFOV != camSettings.storedFOV || sensitivity != camSettings.storedSens && camSettings.storedSens != 0)//used to check if any of the camera settings have been changed
         {
             
-            maxFovValue -= storedCamFOV;//
-            storedCamFOV = camSettings.storedFOV;
-            maxFovValue += storedCamFOV;
-            mainCam.fieldOfView = storedCamFOV;
-            sensitivity = camSettings.storedSens;
+            maxFovValue -= storedCamFOV;//resets and stores the max cam FOV modifier
+            storedCamFOV = camSettings.storedFOV;//stores the new FOV set
+            maxFovValue += storedCamFOV;//stores the new max FOV the player can have
+            mainCam.fieldOfView = storedCamFOV;//sets the cameras Field of View
+            sensitivity = camSettings.storedSens;//sets the cameras sensitivity
         }
         else if (camSettings.storedSens == 0)//checks if sensitivityInput is 0, if it is
         {

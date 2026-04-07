@@ -191,7 +191,10 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
 
     private void DashDown()//start of the downdash function. this is used to allow the player to perform the down dash
     {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);//resets players vertical velocity so that downdash actually does something.
+        if (rb.linearVelocity.y > 0)//verifies the player isnt already falling
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);//resets players vertical velocity so that you can actually downdash out of a jump
+        }
         rb.AddForce((transform.up * -1) * QBForce / 2, ForceMode.Impulse);// applies a downward force to the player
         downDashBounceTime = downDashBounceTimeStored;//allows a higher jump after dashing into the ground from midair. was originally done automatically but turned out EXTREMELY annoying in practice.
         chargeCount -= 1;//reduces the held charges by 1

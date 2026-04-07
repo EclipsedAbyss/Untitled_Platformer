@@ -28,22 +28,30 @@ public class SettingsController : MonoBehaviour
         {
             targetFPSInput.interactable = true;
             targetFPSSlider.interactable = true;
+            VSYNCToggler.interactable = true;
             UNCAPToggler.isOn = false;
         }
         else
         {
             targetFPSInput.interactable = false;
             targetFPSSlider.interactable = false;
+            VSYNCToggler.interactable = false;
             UNCAPToggler.isOn = true;
         }
 
         if (settingsStored.VSYNC)
         {
             VSYNCToggler.isOn = true;
+            targetFPSInput.interactable = false;
+            targetFPSSlider.interactable = false;
+            UNCAPToggler.interactable = false;
         }
         else
         {
             VSYNCToggler.isOn = false;
+            targetFPSInput.interactable = true;
+            targetFPSSlider.interactable = true;
+            UNCAPToggler.interactable = true;
         }
 
     }
