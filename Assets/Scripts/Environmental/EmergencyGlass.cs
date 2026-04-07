@@ -8,7 +8,7 @@ public class EmergencyGlass : MonoBehaviour
     {
         glass = this.gameObject;//used to get the gameobject f the glass. this is here to make glass easier to break
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.GetComponent<BaseMovement>() != null)//checks if the colliding object actually is the player (this is mainly precautionary)
         {
@@ -19,5 +19,7 @@ public class EmergencyGlass : MonoBehaviour
             }
         }
     }//end of trigger functions
+
+
 }//end of the glass script
 

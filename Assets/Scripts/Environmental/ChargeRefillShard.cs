@@ -5,6 +5,7 @@ public class ChargeRefillShard : MonoBehaviour
     private BaseMovement player;//gets the players movement script
     [SerializeField] private float strength;//tyhe manually set number of charges the shard will restore
     [SerializeField] private float chargeTime;//the manually set time it takes for the shard to recharge
+    [SerializeField] private GameObject Visuals;
     [SerializeField] private Material activeMaterial;//the material used when the charge is active
     [SerializeField] private Material inactiveMaterial;//the material used when the shard is inactive
     [SerializeField] private GameObject particles;//stores a prefab for the particles that allow visual feedback for collecting a charge
@@ -25,7 +26,7 @@ public class ChargeRefillShard : MonoBehaviour
                 player = other.GetComponent<BaseMovement>();//sets the player field to the player
                 player.chargeCount += strength;//adds the number used for strength to the dash count
                 charged = false;//sets the charged state to false
-                gameObject.GetComponent<MeshRenderer>().material = inactiveMaterial;//sets the material of the shard to the inactive material
+                Visuals.GetComponent<MeshRenderer>().material = inactiveMaterial;//sets the material of the shard to the inactive material
                 Invoke(nameof(Recharge), chargeTime);//starts the recharge delay
                 Instantiate(particles, this.transform);//spawns the world particles on the shard
                 Instantiate(overlayParticles, overlay);//spawns the screen effect particles
@@ -37,6 +38,6 @@ public class ChargeRefillShard : MonoBehaviour
     private void Recharge()//start of recharge function
     {
         charged = true;//sets the charged bool to true
-        gameObject.GetComponent<MeshRenderer>().material = activeMaterial;//swaps the material back to the active shard
+        Visuals.GetComponent<MeshRenderer>().material = activeMaterial;//swaps the material back to the active shard
     }//end of recharge function
 }//end of shard script

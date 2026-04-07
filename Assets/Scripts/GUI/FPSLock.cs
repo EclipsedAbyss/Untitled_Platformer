@@ -4,14 +4,16 @@ public class FPSLock : MonoBehaviour//start of the FPS Locker script
 {
     public int defaultTarget;//the defaulttarget fps
     private StoredSettings storedFPS;//the manually set FPS target by the player
+    public float timetoLagCheck = 0.5f;
     private void Awake()//start of awake
     {
         storedFPS = FindFirstObjectByType<StoredSettings>();//chamges the stored fps to the fps value set by the user
         QualitySettings.vSyncCount = 0;//disables vsync
         Application.targetFrameRate = defaultTarget;//sets the default target framerate to the actual framerate target
+        LagChecker();
     }//end of awake
 
-    private void Update()//start of update
+    private void LagChecker()//start of update
     {
         if (Application.targetFrameRate != storedFPS.storedFPS && !storedFPS.FPSUncap)//checks if the active framerate target alligns with the set target, alongside if the fps is capped
         {
@@ -21,7 +23,7 @@ public class FPSLock : MonoBehaviour//start of the FPS Locker script
         {
             Application.targetFrameRate = -1;//uncap the framerate
         }
-
+        Invoke(nameof(LagChecker),timetoLagCheck);
     }//end of update
     private void OnEnable()//start of onenable
     {
