@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlatformTrigger : MonoBehaviour//this controls the player movement effects of the moving platform.
+public class PlatformTrigger : MonoBehaviour//this controls the player movement effects of the moving platform. this script is NOT used for the platform itselfs movement, as that is held elsewhere,
 {//start of the platform trigger script
     [SerializeField] private GameObject platform;//stores the platform
     [SerializeField] private MovingPlatform platformInfo;//stores the information about the platform

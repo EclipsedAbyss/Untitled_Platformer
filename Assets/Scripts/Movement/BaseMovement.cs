@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its used to refer to both vertical and horizontal dashes in instances where both are affected by one field
@@ -45,7 +46,7 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
     public bool amDashing;//this is used to tell things collided with that the player is dashing
     public float downDashBounceTime;//the window of time where the player can jump out of the state entered when dashing into the ground
     [SerializeField] private float QBDuration;//time until the player is no longer marked as dashing
-    [SerializeField] private float boostChainFallOff;//the
+    [SerializeField] private float boostChainFallOff;//the fall off for chain boosting
     [SerializeField] private float downDashKickDecayTime;//used to decay the extra force a down dash gives a normal dash
     [SerializeField] private float chargeRechargeGroundedBonus;//names a bit messy, couldnt figure out a good name. this is just how much the recharge delay gets multiplied while grounded
     [HideInInspector] public float chargeRechargeInterval;//runs a time.deltatime to slowly increment up. once it hits a certain threshhold it gets reset and fills a dash
@@ -57,11 +58,15 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
     public KeyCode downDash = KeyCode.Mouse2;//gets rightmouse for down dashing
 
     [Header("Ground Check")]// checks for the player being on the ground.
+    private Collider[] grounds;//used to detect the ground
+    private Collider[] ices;//used to detect the ground
     public float playerHeight;//stores the height of the player
     public LayerMask whatIsGround;//stores the layermask for ground
     public LayerMask whatIsIce;//stores the layermask for ice
     bool onGround;//confirms that the player is grounded. 
     private bool canCoyoteTime;//used to store the coyotetime state
+    private bool grounded;//used to tell the game if the player is grounded
+    private bool sliding;
 
     private void Start()//start of start
     {
@@ -76,8 +81,11 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
 
     private void Update()//start of update
     {
-        bool grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);// this allows the player to know what ground is
-        bool sliding = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsIce);//allows the player to have different movement on ice.
+        grounds = Physics.OverlapSphere(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - 0.7f, gameObject.transform.position.z), 0.4f, whatIsGround);
+        ices = Physics.OverlapSphere(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - 0.7f, gameObject.transform.position.z), 0.4f, whatIsIce);
+
+        IceChecker();
+        GroundChecker();
         if (grounded)//checks if the player is in the grounded state
         {
             rb.linearDamping = groundDrag;//if it is, apply ground drag to player movement
@@ -118,6 +126,31 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
 
     }//end of lateupdate
 
+
+    private void GroundChecker()
+    {
+    
+        if (grounds.Length > 0)
+        {
+            grounded = true;
+        }
+        else
+        {
+            grounded = false;
+        }
+    }
+
+    private void IceChecker()
+    {
+        if (ices.Length > 0)
+        {
+            sliding = true;
+        }
+        else
+        {
+            sliding = false;
+        }
+    }
     private void FixedUpdate()//start of fixedupdate
     {
         InputRegister();// used to detect inputs
@@ -151,7 +184,7 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
             Invoke(nameof(DownDashKickDecay), downDashKickDecayTime);//invokes the decay period for the kick
         }
 
-        if(Input.GetKeyDown(QBKey))// registers when the player quickboosts
+        if(Input.GetKeyDown(QBKey))// registers when the player quickboosts. this is stored in update. this block of code is used for the dash systems the player uses, so that it follows the directional key the player is holding.
         {
             if (chargeCount > 0 && Input.GetKey(backwardKey))// placed at the top for highest priority, gets the player holding back and dashes in that direction
             {
