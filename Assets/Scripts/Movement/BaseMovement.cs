@@ -54,8 +54,8 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
 
     [Header("keybinds")]// actual input bindings. the priorly listed wasd are not really inputs but more just detection.
     public KeyCode jumpKey = KeyCode.Space;//gets the spacebar for jumping
-    public KeyCode QBKey = KeyCode.Mouse1;//gets leftmouse for dashing
-    public KeyCode downDash = KeyCode.Mouse2;//gets rightmouse for down dashing
+    public KeyCode QBKey = KeyCode.LeftShift;//gets leftmouse for dashing
+    public KeyCode downDash = KeyCode.LeftControl;//gets rightmouse for down dashing
 
     [Header("Ground Check")]// checks for the player being on the ground.
     private Collider[] grounds;//used to detect the ground
