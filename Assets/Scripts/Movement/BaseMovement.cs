@@ -56,6 +56,7 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
     public KeyCode jumpKey = KeyCode.Space;//gets the spacebar for jumping
     public KeyCode QBKey = KeyCode.LeftShift;//gets leftmouse for dashing
     public KeyCode downDash = KeyCode.LeftControl;//gets rightmouse for down dashing
+    public bool freeMove;
 
     [Header("Ground Check")]// checks for the player being on the ground.
     private Collider[] grounds;//used to detect the ground
@@ -70,6 +71,7 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
 
     private void Start()//start of start
     {
+        freeMove = true;
         rb = this.GetComponent<Rigidbody>();// gets the players rigidbody.
         chargeCountStored = chargeCount;//stores the total amount of dashes manually set.
         downDashBounceTimeStored = downDashBounceTime;//same as above
@@ -153,7 +155,10 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
     }
     private void FixedUpdate()//start of fixedupdate
     {
-        InputRegister();// used to detect inputs
+        if (freeMove)
+        {
+            InputRegister();// used to detect inputs
+        }
         SpeedControl();// used for drag on ground
         ResetQB();// used to recharge the players useable charge count.
         MoveDirection();    //allows movement and prevents movement from being sped up based on framerate.
