@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 1067337914784621448}
   - component: {fileID: 6267170590164987111}
   - component: {fileID: 8961517341218516715}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: GlassBoundTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

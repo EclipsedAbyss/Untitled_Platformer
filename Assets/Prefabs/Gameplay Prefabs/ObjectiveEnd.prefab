@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2233401383717979112}
   - component: {fileID: 5348792760641036963}
   - component: {fileID: 1229424153101469267}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ObjectiveEndTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

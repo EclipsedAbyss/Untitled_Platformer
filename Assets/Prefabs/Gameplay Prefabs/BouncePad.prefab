@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 5085116546725129525}
   - component: {fileID: 2215230082406952945}
   - component: {fileID: 3983687940120637866}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: BouncePadCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}

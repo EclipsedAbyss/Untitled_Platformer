@@ -7,12 +7,14 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
 
     [Header("movement")]//these are all for basic movement (walking around on the floor)bhn
     public float moveSpeed;//manually set value for the default player speed
-    public float overSpeed;//manually se tvalue for the post-dash player speed
+    public float overSpeed;//manually set value for the post-dash player speed
+    public float grappleSpeed;//manually set value for the speed out of a grapple cancel
     public Transform orientation;//the players orientation
     float horizontalInput;//the horizontal input axis(a and d prefferably)
     float verticalInput;//the vertical input axis (w and s prefferably)
     private float overSpeedThreshhold;//the velocity required to exit the normal movement speed and go into the increased state
     [SerializeField] private float overSpeedThreshholdValue;//used to manually set how much speed over the cap the player needs to enter over speed. this was added after initial playtesting revealed issues with this
+    [SerializeField] private Grapple grappling;
     Vector3 MovementDirection;//the direction the player is moving in
     public float groundDrag;//the drag the player recieves whie grounded
     public float iceDrag;//the drag the player recieves on ice
@@ -294,10 +296,15 @@ public class BaseMovement : MonoBehaviour//for context, QB means quickboost. its
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x - Time.deltaTime / 2, rb.linearVelocity.y, rb.linearVelocity.z  - Time.deltaTime / 2);//decrements over speed by time.deltatime
         }
-        else if(flatVel.magnitude > overSpeed)// caps the over speed.
+        else if (flatVel.magnitude > overSpeed && flatVel.magnitude > grappleSpeed)// caps the over speed.
         {
             Vector3 limitedOverVel = flatVel.normalized * overSpeed;//averages and locks the overspeed
-            rb.linearVelocity = new Vector3(limitedOverVel.x, rb.linearVelocity.y, limitedOverVel.z);//vector3 is made so that it does not count the upward velocity
+            rb.linearVelocity = new Vector3(limitedOverVel.x -= Time.deltaTime / 2, rb.linearVelocity.y, limitedOverVel.z -= Time.deltaTime / 2);//vector3 is made so that it does not count the upward velocity
+        }
+        else if (flatVel.magnitude > grappleSpeed)
+        {
+            Vector3 limitedGrappleVel = flatVel.normalized * grappleSpeed;//averages and locks the grapplespeed
+            rb.linearVelocity = new Vector3(limitedGrappleVel.x, rb.linearVelocity.y, limitedGrappleVel.z);//vector3 is made so that it does not count the upward velocity
         }
     }//end of the speed control function
     private void Jump()// allows to jump

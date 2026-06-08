@@ -360,7 +360,7 @@ GameObject:
   - component: {fileID: 4653354223324151533}
   - component: {fileID: 4511842055597065889}
   - component: {fileID: 4518474283128566406}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Trigger_Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -437,7 +437,7 @@ GameObject:
   - component: {fileID: 8794454974233243681}
   - component: {fileID: 2152038105303840419}
   - component: {fileID: 2475715554938698172}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Trigger_End
   m_TagString: Untagged
   m_Icon: {fileID: 0}

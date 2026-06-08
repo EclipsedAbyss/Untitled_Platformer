@@ -75,20 +75,20 @@ public class MainMenuController : MonoBehaviour//start of the script for control
 
     public void OnLevel1Press()//start of the function for the level 1 selection
     {
-        SceneManager.LoadScene(2);//loads level 1
+        //SceneManager.LoadScene(2);//loads level 1
     }//end of the function for selecting level 1
     public void OnLevel2Press()//start of the function for the level 2 selection
     {
-        SceneManager.LoadScene(3);//loads level 2
+        SceneManager.LoadScene(2);//loads level 2
     }//end of the function for selecting level 2
 
     public void OnLevel3Press()//start of the function for the level 3 selection
     {
-        SceneManager.LoadScene(4);//loads level 3
+        //SceneManager.LoadScene(4);//loads level 3
     }//end of the function for selecting level 3
 
     public void OnLevel4Press()//start of the function for the level 4 selection
     {
-        SceneManager.LoadScene(5);//loads level 4
+       // SceneManager.LoadScene(5);//loads level 4
     }//end of the function for selecting level 4
 }

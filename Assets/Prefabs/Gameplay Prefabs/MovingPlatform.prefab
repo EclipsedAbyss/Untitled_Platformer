@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4161432929019156601}
   - component: {fileID: 4229486556741574945}
   - component: {fileID: 7938750412778572252}
-  m_Layer: 3
+  m_Layer: 2
   m_Name: MovingPlatformTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,6 @@ MonoBehaviour:
   boundingTrigger: {fileID: 2478691583682459681}
   Direction: 0
   platform: {fileID: 3732375061759426008}
-  velocity: {fileID: 2016714849212028255}
 --- !u!54 &2016714849212028255
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8276460789916806451}
   - component: {fileID: 4693142298388443834}
   - component: {fileID: 4220514393800735790}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Dash_Shard
   m_TagString: Untagged
   m_Icon: {fileID: 0}

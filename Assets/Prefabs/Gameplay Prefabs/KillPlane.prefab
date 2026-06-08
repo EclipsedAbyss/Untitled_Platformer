@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1359786977690427121}
   - component: {fileID: 5051621621767372730}
   - component: {fileID: 5359565128499938618}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: KillBoundTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
